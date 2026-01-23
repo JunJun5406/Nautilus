@@ -1,0 +1,108 @@
+using System;
+using HarmonyLib;
+using R2API;
+using RoR2;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+
+namespace Nautilus.Items
+{
+    /// <summary>
+    ///     Abstract item used for initializing new items.
+    /// </summary>
+    public abstract class ItemBase
+    {
+        public ItemDef ItemDef;
+        public ItemIndex ItemIndex
+        {
+            get
+            {
+                return ItemCatalog.FindItemIndex(ItemDef.name);
+            }
+        }
+        public abstract bool Enabled
+        {
+            get;
+        }
+        public abstract ItemDef ConversionItemDef
+        {
+            get;
+        }
+        public string Name;
+        public ItemTag[] Tags;
+        public ItemTier Tier;
+        public bool CanRemove;
+        public bool IsConsumed;
+        public bool Hidden;
+
+        public ItemBase(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove, bool _isConsumed, bool _hidden)
+        {
+            Name = _name;
+            Tags = _tags;
+            Tier = _tier;
+            CanRemove = _canRemove;
+            IsConsumed = _isConsumed;
+            Hidden = _hidden;
+
+            ItemInit.ItemList.Add(this);
+        }
+
+        public bool RegisterItem()
+        {
+            if (!Enabled)
+            {
+                return Enabled;
+            }
+
+            ItemDef = ScriptableObject.CreateInstance<ItemDef>();
+
+            ItemDef.name = Name;
+            ItemDef.nameToken = "NT_ITEM_" + Name.ToUpper() + "_NAME";
+            ItemDef.pickupToken = "NT_ITEM_"+ Name.ToUpper() + "_PICKUP";
+            ItemDef.descriptionToken = "NT_ITEM_" + Name.ToUpper() + "_DESC";
+            ItemDef.loreToken = "NT_ITEM_" + Name.ToUpper() + "_LORE";
+
+            ItemDef.tags = Tags;
+            ItemDef.deprecatedTier = Tier;
+            ItemDef.canRemove = CanRemove;
+            ItemDef.isConsumed = IsConsumed;
+            ItemDef.hidden = Hidden;
+            ItemDef.requiredExpansion = Main.Expansion;
+
+            ItemDef.pickupIconSprite = null; // Main.Assets.LoadAsset<Sprite>("Assets/Icons/" + _name + ".png");
+            ItemDef.pickupModelPrefab = null; // Main.Assets.LoadAsset<GameObject>("Assets/Models/Prefabs/" + _name + ".prefab");
+
+            ItemAPI.Add(new CustomItem(ItemDef, []));
+
+            if (ConversionItemDef)
+            {
+                ItemDef.Pair transformation = new()
+                {
+                    itemDef1 = ConversionItemDef,
+                    itemDef2 = ItemDef
+                };
+                Main.ItemConversionList.Add(transformation);
+
+                Log.Info(String.Format("Added void conversion from {0} to {1}", ConversionItemDef.name, ItemDef.name));
+            }
+            
+            return Enabled;
+        }
+
+        public int GetItemCountEffective(CharacterBody body)
+        {
+            int ret = 0;
+
+            if (body && body.inventory)
+            {
+                ret = body.inventory.GetItemCountEffective(ItemDef);
+            }
+
+            return ret;
+        }
+
+        public abstract void FormatDescriptionTokens();
+        public abstract void RegisterHooks();
+        // TODO pickups
+    }
+}
