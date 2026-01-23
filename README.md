@@ -1,6 +1,6 @@
 # Nautilus
 <p align="center"><img src="https://github.com/hex3gc/Nautilus/blob/main/Images/expansion.png?raw=true" width=256></p>
-<p align="center">Adds **6**  void counterparts to vanilla items.</p>
+<p align="center">Adds 6  void counterparts to vanilla items.</p>
 
 | Icon  | Description |
 | ------------- | ------------- |
