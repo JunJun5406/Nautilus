@@ -1,5 +1,5 @@
 # Nautilus
-<p align="center"><img src="https://riskofrain2.wiki.gg/images/thumb/Iconpng.png/50px-Iconpng.png" width=128></p>
+<p align="center"><img src="https://github.com/hex3gc/Nautilus/blob/main/Images/expansion.png?raw=true" width=256></p>
 <p align="center">Adds **6**  void counterparts to vanilla items.</p>
 
 | Icon  | Description |
