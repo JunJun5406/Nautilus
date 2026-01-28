@@ -28,6 +28,14 @@ namespace Nautilus.Items
         {
             get;
         }
+        public abstract GameObject itemPrefab
+        {
+            get;
+        }
+        public abstract Sprite itemIcon
+        {
+            get;
+        }
         public string Name;
         public ItemTag[] Tags;
         public ItemTier Tier;
@@ -69,8 +77,8 @@ namespace Nautilus.Items
             ItemDef.hidden = Hidden;
             ItemDef.requiredExpansion = Main.Expansion;
 
-            ItemDef.pickupIconSprite = null; // Main.Assets.LoadAsset<Sprite>("Assets/Icons/" + _name + ".png");
-            ItemDef.pickupModelPrefab = null; // Main.Assets.LoadAsset<GameObject>("Assets/Models/Prefabs/" + _name + ".prefab");
+            ItemDef.pickupModelPrefab = itemPrefab;
+            ItemDef.pickupIconSprite = itemIcon;
 
             ItemAPI.Add(new CustomItem(ItemDef, []));
 
@@ -100,7 +108,6 @@ namespace Nautilus.Items
 
             return ret;
         }
-
         public abstract void FormatDescriptionTokens();
         public abstract void RegisterHooks();
         // TODO pickups

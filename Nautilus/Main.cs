@@ -9,6 +9,8 @@ using UnityEngine.AddressableAssets;
 using R2API;
 using Nautilus.Items;
 using System.Collections.Generic;
+using System.Reflection;
+using ShaderSwapper;
 
 namespace Nautilus
 {
@@ -17,6 +19,7 @@ namespace Nautilus
     [BepInDependency("com.bepis.r2api.items", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.bepis.r2api.language", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.rune580.riskofoptions", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.bepis.r2api.language", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class Main : BaseUnityPlugin
     {
@@ -36,12 +39,19 @@ namespace Nautilus
 
             Instance = this;
 
+            Log.Info("Creating assets...");
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Nautilus.nautilusvfx"))
+            {
+                Assets = AssetBundle.LoadFromStream(stream);
+            }
+            base.StartCoroutine(Assets.UpgradeStubbedShadersAsync());
+
             Log.Info($"Creating config...");
             if (Compat.RiskOfOptions)
             {
                 Log.Info($"Detected RiskOfOptions");
                 ModSettingsManager.SetModDescription("Adds new void counterparts for vanilla items.");
-                // ModSettingsManager.SetModIcon(MainAssets.LoadAsset<Sprite>("Assets/VFXPASS3/Icons/icon.png"));
+                ModSettingsManager.SetModIcon(Assets.LoadAsset<Sprite>("Assets/icons/expansion.png"));
             }
 
             Log.Info($"Creating expansion...");
@@ -49,8 +59,8 @@ namespace Nautilus
             Expansion.name = NAUTILUS_NAME;
             Expansion.nameToken = "NT_EXPANSION_NAME";
             Expansion.descriptionToken = "NT_EXPANSION_DESC";
-            Expansion.iconSprite = null; // MainAssets.LoadAsset<Sprite>("Assets/VFXPASS3/Icons/expansion.png");
-            Expansion.disabledIconSprite = null; // Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/MiscIcons/texUnlockIcon.png").WaitForCompletion();
+            Expansion.iconSprite = Assets.LoadAsset<Sprite>("Assets/icons/expansion.png");
+            Expansion.disabledIconSprite = Assets.LoadAsset<Sprite>("Assets/icons/expansion-inactive.png");
             Expansion.requiredEntitlement = null;
             ContentAddition.AddExpansionDef(Expansion);
 

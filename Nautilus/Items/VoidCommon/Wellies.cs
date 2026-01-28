@@ -27,6 +27,8 @@ namespace Nautilus.Items
     {
         public override bool Enabled => Wellies_Enabled.Value;
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC3/Items/CritAtLowerElevation/CritAtLowerElevation.asset").WaitForCompletion();
+        public override GameObject itemPrefab => null;
+        public override Sprite itemIcon => null;
         public BuffDef DebuffDef => Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Treebot/bdWeak.asset").WaitForCompletion();
 
         public Wellies(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
@@ -45,7 +47,7 @@ namespace Nautilus.Items
             "Void common: Waterlogged Wellies",
             "Downward pull force",
             "How strong the on-hit pull down effect is.",
-            6f,
+            12f,
             0f,
             24f,
             0.5f
@@ -55,7 +57,7 @@ namespace Nautilus.Items
             "Void common: Waterlogged Wellies",
             "Downward pull force (Per stack)",
             "How strong the on-hit pull down effect is per additional stack.",
-            3f,
+            6f,
             0f,
             24f,
             0.5f
@@ -80,7 +82,7 @@ namespace Nautilus.Items
             12f,
             0.5f
         );
-
+        
         // Tokens
         public override void FormatDescriptionTokens()
         {

@@ -7,7 +7,7 @@ using UnityEngine.AddressableAssets;
 using HarmonyLib;
 using System.Threading;
 using UnityEngine.Networking;
-
+/*
 namespace Nautilus.Items
 {
     public static partial class ItemInit
@@ -176,3 +176,4 @@ namespace Nautilus.Items
         
     }
 }
+*/

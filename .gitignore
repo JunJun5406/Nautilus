@@ -329,3 +329,4 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 Nautilus/libs/RiskOfOptions.dll
+Nautilus/libs/ShaderSwapper.dll

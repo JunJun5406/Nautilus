@@ -11,6 +11,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="nautilusvfx" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,10 +32,15 @@
 			<HintPath>Nautilus/libs/RiskOfOptions.dll</HintPath>
 			<private>false</private>
 		</Reference>
+		<Reference Include="ShaderSwapper">
+			<HintPath>Nautilus/libs/ShaderSwapper.dll</HintPath>
+			<private>false</private>
+		</Reference>
 
 		<Lang Include="Language/en/en.language" />
+
 	</ItemGroup>
-	
+
 	<Target Name="Lang" BeforeTargets="Build">
 		<Copy SourceFiles="@(Lang)" DestinationFolder="$(OutputPath)" />
 	</Target>

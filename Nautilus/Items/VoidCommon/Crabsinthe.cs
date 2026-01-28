@@ -28,7 +28,13 @@ namespace Nautilus.Items
     {
         public override bool Enabled => Crabsinthe_Enabled.Value;
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/HealingPotion/HealingPotion.asset").WaitForCompletion();
+        public override GameObject itemPrefab => OverwritePrefabMaterials();
+        public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/crabsinthe.png");
         public ItemDef ConversionItemDefConsumed => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/HealingPotion/HealingPotionConsumed.asset").WaitForCompletion();
+        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/HealingPotion/matHealingPotionGlass.mat").WaitForCompletion();
+        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterSphereAreaIndicator.mat").WaitForCompletion();
+        public Material material2 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/TreasureCacheVoid/matLockboxVoidEgg.mat").WaitForCompletion();
+        public Material material4 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidRaidCrab/matVoidRaidCrabEyeOverlay2.mat").WaitForCompletion();
 
         public Crabsinthe(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
         base(_name, _tags, _tier, _canRemove, _isConsumed, _hidden){}
@@ -68,6 +74,23 @@ namespace Nautilus.Items
             "Should this item corrupt consumed elixirs?",
             true
         );
+
+        public GameObject OverwritePrefabMaterials()
+        {
+            GameObject ret = Main.Assets.LoadAsset<GameObject>("Assets/prefabs/crabsinthe.prefab");
+
+            Material[] materials =
+            {
+                material0,
+                material1,
+                material2,
+                ret.GetComponentInChildren<MeshRenderer>().GetMaterialArray()[3],
+                material4
+            };
+            ret.GetComponentInChildren<MeshRenderer>().SetMaterialArray(materials);
+
+            return ret;
+        }
 
         // Tokens
         public override void FormatDescriptionTokens()

@@ -29,6 +29,8 @@ namespace Nautilus.Items
     {
         public override bool Enabled => VoidWatch_Enabled.Value;
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/FragileDamageBonus/FragileDamageBonus.asset").WaitForCompletion();
+        public override GameObject itemPrefab => null;
+        public override Sprite itemIcon => null;
         public BuffDef VoidWatchBuff;
 
         public VoidWatch(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
