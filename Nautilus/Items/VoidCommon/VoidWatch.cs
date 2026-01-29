@@ -29,8 +29,10 @@ namespace Nautilus.Items
     {
         public override bool Enabled => VoidWatch_Enabled.Value;
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/FragileDamageBonus/FragileDamageBonus.asset").WaitForCompletion();
-        public override GameObject itemPrefab => null;
-        public override Sprite itemIcon => null;
+        public override GameObject itemPrefab => OverwritePrefabMaterials();
+        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/Base/Treebot/matTreebotMetal.mat").WaitForCompletion();
+        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/TrimSheets/matTrimSheetMetalGolden.mat").WaitForCompletion();
+        public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/voidWatch.png");
         public BuffDef VoidWatchBuff;
 
         public VoidWatch(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
@@ -88,6 +90,21 @@ namespace Nautilus.Items
             "Do not display the buff for this item.",
             false
         );
+
+        public GameObject OverwritePrefabMaterials()
+        {
+            GameObject ret = Main.Assets.LoadAsset<GameObject>("Assets/prefabs/voidWatch.prefab");
+
+            Material[] materials =
+            {
+                material0,
+                material1,
+                material1,
+            };
+            ret.GetComponentInChildren<MeshRenderer>().SetMaterialArray(materials);
+
+            return ret;
+        }
 
         // Tokens
         public override void FormatDescriptionTokens()
@@ -156,14 +173,14 @@ namespace Nautilus.Items
         public void CreateVoidWatchBuff()
         {
             BuffDef voidWatchBuff = ScriptableObject.CreateInstance<BuffDef>();
-            voidWatchBuff.buffColor = new Color(1f, 1f, 1f);
+            voidWatchBuff.buffColor = new Color(0.76f, 0.3f, 0.92f);
             voidWatchBuff.canStack = false;
             voidWatchBuff.isDebuff = false;
             voidWatchBuff.ignoreGrowthNectar = true;
-            voidWatchBuff.name = "Collector's Appraisal damage bonus";
+            voidWatchBuff.name = "Collector's Appraisal damage";
             voidWatchBuff.isHidden = VoidWatch_HideBuff.Value;
             voidWatchBuff.isCooldown = false;
-            voidWatchBuff.iconSprite = null; // LoadBuffSprite();
+            voidWatchBuff.iconSprite = Main.Assets.LoadAsset<Sprite>("Assets/icons/voidWatchBuff.png");
             ContentAddition.AddBuffDef(voidWatchBuff);
 
             VoidWatchBuff = voidWatchBuff;
