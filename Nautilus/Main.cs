@@ -10,7 +10,7 @@ using R2API;
 using Nautilus.Items;
 using System.Collections.Generic;
 using System.Reflection;
-using ShaderSwapper;
+// using ShaderSwapper;
 
 namespace Nautilus
 {
@@ -44,7 +44,7 @@ namespace Nautilus
             {
                 Assets = AssetBundle.LoadFromStream(stream);
             }
-            base.StartCoroutine(Assets.UpgradeStubbedShadersAsync());
+            // base.StartCoroutine(Assets.UpgradeStubbedShadersAsync());
 
             Log.Info($"Creating config...");
             if (Compat.RiskOfOptions)

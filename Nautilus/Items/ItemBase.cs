@@ -1,5 +1,6 @@
 using System;
 using HarmonyLib;
+using IL.RoR2.UI;
 using R2API;
 using RoR2;
 using UnityEngine;
@@ -79,6 +80,16 @@ namespace Nautilus.Items
 
             ItemDef.pickupModelPrefab = itemPrefab;
             ItemDef.pickupIconSprite = itemIcon;
+
+            if (itemPrefab)
+            {
+                Transform child = itemPrefab.transform.GetChild(0);
+                ModelPanelParameters modelPanelParameters = itemPrefab.AddComponent<ModelPanelParameters>();
+                modelPanelParameters.minDistance = 1f;
+                modelPanelParameters.maxDistance = 2f;
+                modelPanelParameters.focusPointTransform = child;
+                modelPanelParameters.cameraPositionTransform = child;
+            }
 
             ItemAPI.Add(new CustomItem(ItemDef, []));
 

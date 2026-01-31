@@ -27,8 +27,10 @@ namespace Nautilus.Items
     {
         public override bool Enabled => Wellies_Enabled.Value;
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC3/Items/CritAtLowerElevation/CritAtLowerElevation.asset").WaitForCompletion();
-        public override GameObject itemPrefab => null;
-        public override Sprite itemIcon => null;
+        public override GameObject itemPrefab => OverwritePrefabMaterials();
+        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ScrapVoid/matScrapVoidMetal.mat").WaitForCompletion();
+        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailGunnerBase.mat").WaitForCompletion();
+        public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/wellies.png");
         public BuffDef DebuffDef => Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Treebot/bdWeak.asset").WaitForCompletion();
 
         public Wellies(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
@@ -46,21 +48,31 @@ namespace Nautilus.Items
         (
             "Void common: Waterlogged Wellies",
             "Downward pull force",
-            "How strong the on-hit pull down effect is.",
-            12f,
+            "How strong the on-hit pull down effect is in arbitrary wacky units.",
+            90f,
             0f,
-            24f,
-            0.5f
+            240f,
+            10f
         );
         public static ConfigItem<float> Wellies_ForceStack = new ConfigItem<float>
         (
             "Void common: Waterlogged Wellies",
             "Downward pull force (Per stack)",
             "How strong the on-hit pull down effect is per additional stack.",
-            6f,
+            90f,
             0f,
-            24f,
-            0.5f
+            240f,
+            10f
+        );
+        public static ConfigItem<float> Wellies_ForceUnmassed = new ConfigItem<float>
+        (
+            "Void common: Waterlogged Wellies",
+            "Pure downward pull force fraction",
+            "What percentage of downward pull force should be flat (treats the enemy as if it has a mass of 1)? Equalizes large vs. small enemies, but high values can cause larger enemies to take way too much fall damage.",
+            0.5f,
+            0.1f,
+            2.5f,
+            0.1f
         );
         public static ConfigItem<float> Wellies_DebuffSeconds = new ConfigItem<float>
         (
@@ -82,6 +94,22 @@ namespace Nautilus.Items
             12f,
             0.5f
         );
+
+        public GameObject OverwritePrefabMaterials()
+        {
+            GameObject ret = Main.Assets.LoadAsset<GameObject>("Assets/prefabs/wellies.prefab");
+
+            Material[] materials =
+            {
+                material0,
+                material1,
+                material0,
+            };
+            ret.GetComponentInChildren<MeshRenderer>().SetMaterialArray(materials);
+
+            return ret;
+        }
+
         
         // Tokens
         public override void FormatDescriptionTokens()
@@ -117,24 +145,32 @@ namespace Nautilus.Items
                         if (itemCount > 0)
                         {
                             float buffLength = Wellies_DebuffSeconds.Value + (Wellies_DebuffSecondsStack.Value * (itemCount - 1));
-                            float pullDownForce = (Wellies_Force.Value + (Wellies_ForceStack.Value * (itemCount - 1))) * damageInfo.procCoefficient;
+                            float pullDownForce = (Wellies_Force.Value + (Wellies_ForceStack.Value * (itemCount - 1)));
+                            float pullDownForceFlat = pullDownForce * Wellies_ForceUnmassed.Value / 100f;
 
-                            if (pullDownForce > 0f)
+                            if (pullDownForce > 0f && damageInfo.procCoefficient > 0f && !victimBody.name.ToLower().Contains("grandparent"))
                             {
-                                PhysForceInfo physForceInfo = new PhysForceInfo
+                                PhysForceInfo physForceInfoNormal = new PhysForceInfo
                                 {
                                     force = Vector3.down * pullDownForce
+                                };
+                                PhysForceInfo physForceInfoNormalFlat = new PhysForceInfo
+                                {
+                                    force = Vector3.down * pullDownForceFlat,
+                                    massIsOne = true
                                 };
                                 
                                 if (victimBody.TryGetComponent(out CharacterMotor victimMotor) && !victimMotor.isGrounded)
                                 {
-                                    victimMotor.ApplyForceImpulse(physForceInfo);
+                                    victimMotor.ApplyForceImpulse(physForceInfoNormal);
+                                    victimMotor.ApplyForceImpulse(physForceInfoNormalFlat);
                                     victimBody.AddTimedBuff(DebuffDef.buffIndex, buffLength);
                                     Util.PlaySound("Play_voidBarnacle_m1_chargeUp", victimBody.gameObject);
                                 }
                                 else if (victimBody.TryGetComponent(out RigidbodyMotor victimRigidMotor))
                                 {
-                                    victimRigidMotor.ApplyForceImpulse(physForceInfo);
+                                    victimRigidMotor.ApplyForceImpulse(physForceInfoNormal);
+                                    victimRigidMotor.ApplyForceImpulse(physForceInfoNormalFlat);
                                     victimBody.AddTimedBuff(DebuffDef.buffIndex, buffLength);
                                     Util.PlaySound("Play_voidBarnacle_m1_chargeUp", victimBody.gameObject);
                                 }

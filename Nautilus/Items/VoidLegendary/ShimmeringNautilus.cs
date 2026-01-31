@@ -29,9 +29,11 @@ namespace Nautilus.Items
     {
         public override bool Enabled => ShimmeringNautilus_Enabled.Value;
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/Base/ArmorReductionOnHit/ArmorReductionOnHit.asset").WaitForCompletion();
-        public override GameObject itemPrefab => null;
-        public override Sprite itemIcon => null;
+        public override GameObject itemPrefab => OverwritePrefabMaterials();
+        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/EliteVoid/matVoidInfestorMetal.mat").WaitForCompletion();
+        public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/shimmeringNautilus.png");
         public BuffDef NautilusBuff;
+        public Material OverlayMaterial => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidBlinkBodyOverlay.mat").WaitForCompletion();
 
         public ShimmeringNautilus(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
         base(_name, _tags, _tier, _canRemove, _isConsumed, _hidden){}
@@ -85,6 +87,19 @@ namespace Nautilus.Items
             100f
         );
 
+        public GameObject OverwritePrefabMaterials()
+        {
+            GameObject ret = Main.Assets.LoadAsset<GameObject>("Assets/prefabs/shimmeringNautilus.prefab");
+
+            Material[] materials =
+            {
+                material0
+            };
+            ret.GetComponentInChildren<MeshRenderer>().SetMaterialArray(materials);
+
+            return ret;
+        }
+
         // Tokens
         public override void FormatDescriptionTokens()
         {
@@ -107,6 +122,8 @@ namespace Nautilus.Items
         // Hooks
         public override void RegisterHooks()
         {
+            CreateNautilusBuff();
+
             // Damage resist, debuff application and retaliation
             On.RoR2.HealthComponent.TakeDamageProcess += (orig, self, damageInfo) =>
             {
@@ -124,7 +141,7 @@ namespace Nautilus.Items
 
                         if (attackerBody.teamComponent.teamIndex != victimBody.teamComponent.teamIndex)
                         {
-                            attackerBody.AddBuff(NautilusBuff);
+                            attackerBody.AddBuff(NautilusBuff.buffIndex);
                         }
 
                         // Retaliation
@@ -132,7 +149,7 @@ namespace Nautilus.Items
                         {
                             MissileVoidOrb missileVoidOrb = new MissileVoidOrb();
                             missileVoidOrb.origin = victimBody.aimOrigin;
-                            missileVoidOrb.damageValue = victimBody.damage * ShimmeringNautilus_RetaliateDamage.Value + (ShimmeringNautilus_RetaliateDamageStack.Value * (itemCount - 1));
+                            missileVoidOrb.damageValue = victimBody.damage * (ShimmeringNautilus_RetaliateDamage.Value / 100f) + ((ShimmeringNautilus_RetaliateDamageStack.Value / 100f) * (itemCount - 1));
                             missileVoidOrb.teamIndex = victimBody.teamComponent.teamIndex;
                             missileVoidOrb.attacker = victimBody.gameObject;
                             missileVoidOrb.procCoefficient = 0f;
@@ -141,6 +158,14 @@ namespace Nautilus.Items
                             HurtBox mainHurtBox = attackerBody.mainHurtBox;
                             if ((bool)mainHurtBox)
                             {
+                                TemporaryOverlay temporaryOverlay = victimBody.gameObject.AddComponent<TemporaryOverlay>();
+                                temporaryOverlay.duration = 1f;
+                                temporaryOverlay.animateShaderAlpha = true;
+                                temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+                                temporaryOverlay.destroyComponentOnEnd = true;
+                                temporaryOverlay.originalMaterial = OverlayMaterial;
+                                temporaryOverlay.AddToCharacerModel(victimBody.gameObject.GetComponent<ModelLocator>().modelTransform.GetComponentInParent<CharacterModel>());
+
                                 missileVoidOrb.target = mainHurtBox;
                                 OrbManager.instance.AddOrb(missileVoidOrb);
                                 attackerBody.ClearAllBuffs(NautilusBuff);
