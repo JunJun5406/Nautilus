@@ -258,6 +258,7 @@ namespace Nautilus.Items
                 );
 
                 missileQueue--;
+                timer = 0f;
             }
         }
     }
