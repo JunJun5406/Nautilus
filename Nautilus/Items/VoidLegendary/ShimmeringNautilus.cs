@@ -127,10 +127,9 @@ namespace Nautilus.Items
             // Damage resist, debuff application and retaliation
             On.RoR2.HealthComponent.TakeDamageProcess += (orig, self, damageInfo) =>
             {
-                CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
                 CharacterBody victimBody = self.body;
 
-                if (attackerBody && victimBody && attackerBody.teamComponent && victimBody.teamComponent)
+                if (damageInfo.attacker && damageInfo.attacker.TryGetComponent(out CharacterBody attackerBody) && victimBody && attackerBody.teamComponent && victimBody.teamComponent)
                 {
                     int itemCount = GetItemCountEffective(victimBody);
 
