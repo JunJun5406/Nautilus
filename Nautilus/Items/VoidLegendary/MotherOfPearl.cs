@@ -22,7 +22,9 @@ namespace Nautilus.Items
 
     /// <summary>
     ///     // Ver.1
-    /// 
+    ///     A good compromise for a money item; old War Bonds sucked because the money didn't feel important for a legendary, but this item gives the player both money and damage
+    ///     Synergizes with ICBM and pickup items like Ghor's Tome, so this can really pop off in the right circumstances
+    ///     Tradeoff between direct boss damage w/ War Bonds, or this item's passive damage (and the potential downside of your pickups being turned to gold)
     /// </summary>
     public class MotherOfPearl : ItemBase
     {
@@ -32,7 +34,8 @@ namespace Nautilus.Items
         public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/voidstage/matVoidTerrain.mat").WaitForCompletion();
         public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/Base/BonusGoldPackOnKill/matTomeGold.mat").WaitForCompletion();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/motherOfPearl.png");
-        public GameObject moneyPackPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BonusGoldPackOnKill/BonusMoneyPack.prefab").WaitForCompletion();
+        public static GameObject moneyPackPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BonusGoldPackOnKill/BonusMoneyPack.prefab").WaitForCompletion();
+        public static GameObject moneyEffectPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BonusGoldPackOnKill/MoneyPackPickupEffect.prefab").WaitForCompletion();
 
         public MotherOfPearl(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
         base(_name, _tags, _tier, _canRemove, _isConsumed, _hidden){}
@@ -134,7 +137,9 @@ namespace Nautilus.Items
                 if (GetItemCountEffective(self) > 0 && !behavior)
                 {
                     behavior = self.AddItemBehavior<MotherOfPearlBehavior>(itemCount);
+                    behavior.itemIndex = this.ItemIndex;
                     behavior.missiles = MotherOfPearl_MissilesLaunched.Value;
+                    behavior.convertChance = MotherOfPearl_PickupConvert.Value;
                 }
 
                 if (behavior)
@@ -165,20 +170,94 @@ namespace Nautilus.Items
 
                 orig(self, other);
             };
+        }
+    }
 
-            // Replacing pickups
-            On.RoR2.AmmoPickup.ctor += (orig, self) =>
+    public class MotherOfPearlBehavior : CharacterBody.ItemBehavior
+    {
+        public ItemIndex itemIndex;
+        public int missiles = 3;
+        public float damageCoeff = 3f;
+        public float convertRadius = 20f;
+        public float convertChance = 10f;
+        public float missileInterval = 0.33f;
+        public float missileTimer = 0f;
+        public float convertInterval = 1f;
+        public float convertTimer = 0f;
+        public int missileQueue = 0;
+
+        public void Trigger()
+        {
+            missileQueue += missiles;
+        }
+
+        void FixedUpdate()
+        {
+            missileTimer += Time.fixedDeltaTime;
+            convertTimer += Time.fixedDeltaTime;
+
+            // Convert pickup
+            if (convertTimer > convertInterval)
             {
-                if (CheckGoldPickupRoll())
+                Collider[] colliders = Physics.OverlapSphere(body.transform.position, convertRadius);
+                foreach(Collider collider in colliders)
                 {
-                    SpawnGoldPickup(self.transform);
-                    //UnityEngine.Object.Destroy(self.baseObject);
+                    if (collider.gameObject)
+                    {
+                        GameObject gameObject = collider.gameObject;
+
+                        if 
+                        (
+                            !gameObject.GetComponent<MotherOfPearlBlacklistBehavior>() &&
+                            (
+                                gameObject.GetComponentInChildren<AmmoPickup>() 
+                                || gameObject.GetComponentInChildren<HealthPickup>() 
+                                || gameObject.GetComponentInChildren<ElusiveAntlersPickup>()
+                            ) 
+                        )
+                        {
+                            if (CheckGoldPickupRoll())
+                            {
+                                SpawnGoldPickup(gameObject.transform.position);
+
+                                EffectData effectData = new EffectData()
+                                {
+                                    origin = gameObject.transform.position
+                                };
+                                EffectManager.SpawnEffect(MotherOfPearl.moneyEffectPrefab, effectData, true);
+
+                                UnityEngine.Object.Destroy(gameObject);
+                            }
+                            else
+                            {
+                                gameObject.AddComponent<MotherOfPearlBlacklistBehavior>();
+                            }
+                        }
+                    }
                 }
-                else
-                {
-                    orig(self);
-                }
-            };
+
+                convertTimer = 0f;
+            }
+
+            // Missile launch
+            if (missileTimer > missileInterval && missileQueue > 0)
+            {
+                MissileUtils.FireMissile
+                (
+                    body.corePosition,
+                    body,
+                    new ProcChainMask(),
+                    null,
+                    damageCoeff * body.damage,
+                    body.RollCrit(),
+                    GlobalEventManager.CommonAssets.missilePrefab,
+                    DamageColorIndex.Item,
+                    true
+                );
+
+                missileQueue--;
+                missileTimer = 0f;
+            }
         }
 
         public bool CheckGoldPickupRoll()
@@ -188,18 +267,18 @@ namespace Nautilus.Items
             var teamComponents = TeamComponent.GetTeamMembers(TeamIndex.Player);
             foreach (TeamComponent teamComponent in teamComponents)
             {
-                if (teamComponent.body && GetItemCountEffective(teamComponent.body) > 0)
+                if (teamComponent.body && teamComponent.body.inventory && teamComponent.body.inventory.GetItemCountEffective(itemIndex) > 0)
                 {
-                    totalRoll += MotherOfPearl_PickupConvert.Value * 100f;
+                    totalRoll += convertChance * 100f;
                 }
             }
 
             return Util.CheckRoll(totalRoll);
         }
 
-        public void SpawnGoldPickup(Transform origTransform)
+        public void SpawnGoldPickup(Vector3 position)
         {
-            GameObject gameObject = UnityEngine.Object.Instantiate(moneyPackPrefab, origTransform.position, UnityEngine.Random.rotation);
+            GameObject gameObject = UnityEngine.Object.Instantiate(MotherOfPearl.moneyPackPrefab, position, UnityEngine.Random.rotation);
             if ((bool)gameObject)
             {
                 Collider component = gameObject.GetComponent<Collider>();
@@ -226,40 +305,8 @@ namespace Nautilus.Items
         }
     }
 
-    public class MotherOfPearlBehavior : CharacterBody.ItemBehavior
+    public class MotherOfPearlBlacklistBehavior : MonoBehaviour
     {
-        public int missiles = 0;
-        public float damageCoeff = 0f;
-        public float interval = 0.33f;
-        public float timer = 0f;
-        public int missileQueue = 0;
-
-        public void Trigger()
-        {
-            missileQueue += missiles;
-        }
-
-        void FixedUpdate()
-        {
-            timer += Time.fixedDeltaTime;
-            if (timer > interval && missileQueue > 0)
-            {
-                MissileUtils.FireMissile
-                (
-                    body.corePosition,
-                    body,
-                    new ProcChainMask(),
-                    null,
-                    damageCoeff * body.damage,
-                    body.RollCrit(),
-                    GlobalEventManager.CommonAssets.missilePrefab,
-                    DamageColorIndex.Item,
-                    true
-                );
-
-                missileQueue--;
-                timer = 0f;
-            }
-        }
+        
     }
 }
