@@ -19,7 +19,7 @@ namespace Nautilus
     [BepInDependency("com.bepis.r2api.items", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.bepis.r2api.language", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.bepis.r2api.recalculatestats", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency("com.rune580.riskofoptions", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.rune580.riskofoptions", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class Main : BaseUnityPlugin
     {

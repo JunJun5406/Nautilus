@@ -51,7 +51,7 @@ namespace Nautilus.Items
             "Void legendary: Xenobacteria",
             "Attack speed increase",
             "Boost your and your allies' attack speed by this fraction.",
-            0.4f,
+            0.3f,
             0f,
             1f,
             0.05f
@@ -61,7 +61,7 @@ namespace Nautilus.Items
             "Void legendary: Xenobacteria",
             "Attack speed increase (per stack)",
             "Boost your and your allies' attack speed by this fraction, per additional stack.",
-            0.4f,
+            0.3f,
             0f,
             1f,
             0.05f

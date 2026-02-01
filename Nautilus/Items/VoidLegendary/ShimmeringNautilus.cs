@@ -81,7 +81,7 @@ namespace Nautilus.Items
             "Void legendary: Shimmering Nautilus",
             "Retaliation damage (per stack)",
             "Base damage percentage of retaliation hits, per additional stack.",
-            900f,
+            1800f,
             100f,
             2500f,
             100f
