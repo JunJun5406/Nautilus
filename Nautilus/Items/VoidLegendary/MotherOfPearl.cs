@@ -35,7 +35,7 @@ namespace Nautilus.Items
         public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/Base/BonusGoldPackOnKill/matTomeGold.mat").WaitForCompletion();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/motherOfPearl.png");
         public static GameObject moneyPackPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BonusGoldPackOnKill/BonusMoneyPack.prefab").WaitForCompletion();
-        public static GameObject moneyEffectPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BonusGoldPackOnKill/MoneyPackPickupEffect.prefab").WaitForCompletion();
+        public static GameObject convertEffectPrefab => Addressables.LoadAssetAsync<GameObject>("RoR2/Base/DeathProjectile/DeathProjectileTickEffect.prefab").WaitForCompletion();
 
         public MotherOfPearl(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
         base(_name, _tags, _tier, _canRemove, _isConsumed, _hidden){}
@@ -180,9 +180,9 @@ namespace Nautilus.Items
         public float damageCoeff = 3f;
         public float convertRadius = 20f;
         public float convertChance = 10f;
-        public float missileInterval = 0.33f;
+        public float missileInterval = 0.1f;
         public float missileTimer = 0f;
-        public float convertInterval = 1f;
+        public float convertInterval = 0.33f;
         public float convertTimer = 0f;
         public int missileQueue = 0;
 
@@ -224,7 +224,7 @@ namespace Nautilus.Items
                                 {
                                     origin = gameObject.transform.position
                                 };
-                                EffectManager.SpawnEffect(MotherOfPearl.moneyEffectPrefab, effectData, true);
+                                EffectManager.SpawnEffect(MotherOfPearl.convertEffectPrefab, effectData, true);
 
                                 UnityEngine.Object.Destroy(gameObject);
                             }

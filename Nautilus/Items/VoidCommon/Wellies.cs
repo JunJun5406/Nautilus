@@ -28,8 +28,9 @@ namespace Nautilus.Items
         public override bool Enabled => Wellies_Enabled.Value;
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC3/Items/CritAtLowerElevation/CritAtLowerElevation.asset").WaitForCompletion();
         public override GameObject itemPrefab => OverwritePrefabMaterials();
-        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ScrapVoid/matScrapVoidMetal.mat").WaitForCompletion();
+        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/Props/matRescueshipDirtPiles.mat").WaitForCompletion();
         public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailGunnerBase.mat").WaitForCompletion();
+        public Material material2 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/ScrapVoid/matScrapVoidMetal.mat").WaitForCompletion();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/wellies.png");
         public BuffDef DebuffDef => Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Treebot/bdWeak.asset").WaitForCompletion();
 
@@ -49,7 +50,7 @@ namespace Nautilus.Items
             "Void common: Waterlogged Wellies",
             "Downward pull force",
             "How strong the on-hit pull down effect is in arbitrary wacky units.",
-            90f,
+            100f,
             0f,
             240f,
             10f
@@ -59,7 +60,7 @@ namespace Nautilus.Items
             "Void common: Waterlogged Wellies",
             "Downward pull force (Per stack)",
             "How strong the on-hit pull down effect is per additional stack.",
-            90f,
+            100f,
             0f,
             240f,
             10f
@@ -67,9 +68,9 @@ namespace Nautilus.Items
         public static ConfigItem<float> Wellies_ForceUnmassed = new ConfigItem<float>
         (
             "Void common: Waterlogged Wellies",
-            "Pure downward pull force fraction",
-            "What percentage of downward pull force should be flat (treats the enemy as if it has a mass of 1)? Equalizes large vs. small enemies, but high values can cause larger enemies to take way too much fall damage.",
-            0.5f,
+            "Pure downward pull force percentage",
+            "What percentage of downward pull force should treat the enemy as if it's massless? Equalizes large vs. small enemies, but high values can cause larger enemies to take too much fall damage.",
+            1f,
             0.1f,
             2.5f,
             0.1f
@@ -103,7 +104,7 @@ namespace Nautilus.Items
             {
                 material0,
                 material1,
-                material0,
+                material2,
             };
             ret.GetComponentInChildren<MeshRenderer>().SetMaterialArray(materials);
 

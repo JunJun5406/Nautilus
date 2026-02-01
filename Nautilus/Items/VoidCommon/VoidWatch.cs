@@ -31,7 +31,7 @@ namespace Nautilus.Items
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/FragileDamageBonus/FragileDamageBonus.asset").WaitForCompletion();
         public override GameObject itemPrefab => OverwritePrefabMaterials();
         public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSuppressor/matVoidSuppressorStone.mat").WaitForCompletion();
-        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC2/meridian/Assets/matPMGold.mat ").WaitForCompletion();
+        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC2/meridian/Assets/matPMGold.mat").WaitForCompletion();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/voidWatch.png");
         public BuffDef VoidWatchBuff;
 
