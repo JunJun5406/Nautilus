@@ -25,11 +25,10 @@ namespace Nautilus
     {
         public const string NAUTILUS_GUID = "com.Hex3.Nautilus";
         public const string NAUTILUS_NAME = "Nautilus";
-        public const string NAUTILUS_VER = "1.0.0";
+        public const string NAUTILUS_VER = "1.0.2";
         public static Main Instance;
         public static ExpansionDef Expansion;
         public static AssetBundle Assets;
-        public static List<ItemBase> ItemList = new();
         public static List<ItemDef.Pair> ItemConversionList = new();
 
         public void Awake()

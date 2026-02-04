@@ -119,6 +119,17 @@ namespace Nautilus.Items
 
             return ret;
         }
+        public int GetItemCountPermanent(CharacterBody body)
+        {
+            int ret = 0;
+
+            if (body && body.inventory)
+            {
+                ret = body.inventory.GetItemCountPermanent(ItemDef);
+            }
+
+            return ret;
+        }
         public abstract void FormatDescriptionTokens();
         public abstract void RegisterHooks();
         // TODO pickups

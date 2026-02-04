@@ -137,7 +137,7 @@ namespace Nautilus.Items
                 if (GetItemCountEffective(self) > 0 && !behavior)
                 {
                     behavior = self.AddItemBehavior<MotherOfPearlBehavior>(itemCount);
-                    behavior.itemIndex = this.ItemIndex;
+                    behavior.itemIndex = ItemIndex;
                     behavior.missiles = MotherOfPearl_MissilesLaunched.Value;
                     behavior.convertChance = MotherOfPearl_PickupConvert.Value;
                 }
