@@ -190,6 +190,8 @@ namespace Nautilus.Items
                 {
                     FireOrbs(self, itemCount);
                 }
+
+                orig(self, genericSkill);
             };
         }
 
