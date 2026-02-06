@@ -50,7 +50,7 @@ namespace Nautilus.Items
             "Void common: Waterlogged Wellies",
             "Downward pull force",
             "How strong the on-hit pull down effect is in arbitrary wacky units.",
-            100f,
+            150f,
             0f,
             240f,
             10f
@@ -60,7 +60,7 @@ namespace Nautilus.Items
             "Void common: Waterlogged Wellies",
             "Downward pull force (Per stack)",
             "How strong the on-hit pull down effect is per additional stack.",
-            100f,
+            150f,
             0f,
             240f,
             10f

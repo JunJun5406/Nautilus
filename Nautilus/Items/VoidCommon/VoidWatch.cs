@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using HarmonyLib;
 using System.Threading;
+using RoR2.Items;
 
 namespace Nautilus.Items
 {
@@ -24,6 +25,8 @@ namespace Nautilus.Items
     ///     Collector's Appraisal gives you a reason to stay at high health still, but avoids the 'all or nothing' nature of watches by making it unbreakable
     ///     Does not corrupt broken watches, too powerful
     ///     Adds synergy with barrier as it's rare to have a reason to stack barrier items
+    ///     // Ver.2
+    ///     A more interactive alternative to the previous watch, instead working well with crowbars and large hits
     /// </summary>
     public class VoidWatch : ItemBase
     {
@@ -34,6 +37,7 @@ namespace Nautilus.Items
         public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC2/meridian/Assets/matPMGold.mat").WaitForCompletion();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/voidWatch.png");
         public BuffDef VoidWatchBuff;
+        public static GameObject itemImpactEffect => Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/MissileVoid/VoidImpactEffect.prefab").WaitForCompletion();
 
         public VoidWatch(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
         base(_name, _tags, _tier, _canRemove, _isConsumed, _hidden){}
@@ -46,6 +50,7 @@ namespace Nautilus.Items
             "Should this item appear in runs?",
             true
         );
+        /*
         public static ConfigItem<float> VoidWatch_Damage = new ConfigItem<float>
         (
             "Void common: Collectors Appraisal",
@@ -90,6 +95,38 @@ namespace Nautilus.Items
             "Do not display the buff for this item.",
             false
         );
+        */
+
+        public static ConfigItem<float> VoidWatch_Damagev2 = new ConfigItem<float>
+        (
+            "Void common: Collectors Appraisal",
+            "Damage on first hit per buff",
+            "Multiplies the first hit's damage this much each buff.",
+            0.04f,
+            0f,
+            1f,
+            0.01f
+        );
+        public static ConfigItem<float> VoidWatch_DamageStackv2 = new ConfigItem<float>
+        (
+            "Void common: Collectors Appraisal",
+            "Damage on first hit per buff (Per stack)",
+            "Multiplies the first hit's damage this much each buff, per additional stack.",
+            0.04f,
+            0f,
+            1f,
+            0.01f
+        );
+        public static ConfigItem<int> VoidWatch_MaxBuffsv2 = new ConfigItem<int>
+        (
+            "Void common: Collectors Appraisal",
+            "Maximum buffs",
+            "Maximum buffs a wearer can have.",
+            12,
+            1f,
+            24f,
+            1f
+        );
 
         public GameObject OverwritePrefabMaterials()
         {
@@ -110,7 +147,6 @@ namespace Nautilus.Items
         public override void FormatDescriptionTokens()
         {
             string descriptionToken = ItemDef.descriptionToken;
-            string extraBarrierDesc = VoidWatch_BarrierMult.Value == true ? " <style=cIsHealing>Additional temporary barrier multiplies this bonus up to 2x.</style>" : "";
 
             LanguageAPI.AddOverlay
             (
@@ -118,10 +154,9 @@ namespace Nautilus.Items
                 String.Format
                 (
                     Language.currentLanguage.GetLocalizedStringByToken(descriptionToken),
-                    VoidWatch_Damage.Value * 100f,
-                    VoidWatch_DamageStack.Value * 100f,
-                    VoidWatch_HealthThreshold.Value * 100f,
-                    extraBarrierDesc
+                    VoidWatch_Damagev2.Value * 100f,
+                    VoidWatch_DamageStackv2.Value * 100f,
+                    VoidWatch_MaxBuffsv2.Value
                 )
             );
         }
@@ -131,41 +166,51 @@ namespace Nautilus.Items
         {
             CreateVoidWatchBuff();
 
-            // Damage boost
-            RecalculateStatsAPI.GetStatCoefficients += (orig, self) =>
+            // Damage boost on hit
+            On.RoR2.HealthComponent.TakeDamage += (orig, self, damageInfo) =>
             {
-                int itemCount = GetItemCountEffective(orig);
-                HealthComponent healthComponent = orig.healthComponent;
-
-                if (healthComponent && itemCount > 0 && healthComponent.healthFraction >= VoidWatch_HealthThreshold.Value)
+                if (!damageInfo.rejected && damageInfo.damage > 0f && damageInfo.procCoefficient > 0f && damageInfo.attacker && damageInfo.attacker.TryGetComponent(out CharacterBody attackerBody) && self.body && attackerBody.TryGetComponent(out VoidWatchBehavior voidWatchBehavior))
                 {
-                    if (!orig.HasBuff(VoidWatchBuff))
-                    {
-                        orig.AddBuff(VoidWatchBuff);
-                    }
-
-                    float barrierPercent = 0f;
-                    if (healthComponent.barrier > 0f && orig.maxBarrier > 0f)
-                    {
-                        barrierPercent = healthComponent.barrier / orig.maxBarrier;
-                    }
-
-                    float baseDamageBonus = VoidWatch_Damage.Value + (VoidWatch_DamageStack.Value * (itemCount - 1));
-                    float totalDamageBonus = baseDamageBonus + (VoidWatch_BarrierMult.Value == true ? baseDamageBonus * barrierPercent : 0f);
+                    int itemCount = GetItemCountEffective(attackerBody);
+                    int buffCount = attackerBody.GetBuffCount(VoidWatchBuff);
                     
-                    self.damageMultAdd += totalDamageBonus;
+                    if (itemCount > 0 && buffCount > 0)
+                    {
+                        if (buffCount > VoidWatch_MaxBuffsv2.Value / 2)
+                        {
+                            EffectData effectData2 = new EffectData()
+                            {
+                                origin = damageInfo.position
+                            };
+                            EffectManager.SpawnEffect(itemImpactEffect, effectData2, true);
+                        }
+
+                        float totalDamageBoost = buffCount * (VoidWatch_Damagev2.Value + (VoidWatch_DamageStackv2.Value * (itemCount - 1)));
+                        damageInfo.damage += damageInfo.damage * totalDamageBoost;
+                        attackerBody.SetBuffCount(VoidWatchBuff.buffIndex, 0);
+                    }
                 }
+
+                orig(self, damageInfo);
             };
 
-            // Watch 'breaking' effect when falling below threshold
-            On.RoR2.HealthComponent.TakeDamageProcess += (orig, self, damageInfo) =>
+            // Add/remove behavior on inventory change
+            On.RoR2.CharacterBody.OnInventoryChanged += (orig, self) =>
             {
-                orig(self, damageInfo);
+                orig(self);
 
-                if (self.body && self.body.HasBuff(VoidWatchBuff) && self.healthFraction < VoidWatch_HealthThreshold.Value)
+                VoidWatchBehavior behavior = self.GetComponent<VoidWatchBehavior>();
+                int itemCount = GetItemCountEffective(self);
+
+                if (GetItemCountEffective(self) > 0 && !behavior)
                 {
-                    self.body.RemoveBuff(VoidWatchBuff);
-                    Util.PlaySound("Play_item_proc_delicateWatch_break", self.gameObject);
+                    behavior = self.AddItemBehavior<VoidWatchBehavior>(1);
+                    behavior.buffIndex = VoidWatchBuff.buffIndex;
+                }
+
+                if(GetItemCountEffective(self) <= 0 && behavior)
+                {
+                    UnityEngine.Object.Destroy(self.GetComponent<VoidWatchBehavior>());
                 }
             };
         }
@@ -174,16 +219,42 @@ namespace Nautilus.Items
         {
             BuffDef voidWatchBuff = ScriptableObject.CreateInstance<BuffDef>();
             voidWatchBuff.buffColor = new Color(0.76f, 0.3f, 0.92f);
-            voidWatchBuff.canStack = false;
+            voidWatchBuff.canStack = true;
             voidWatchBuff.isDebuff = false;
-            voidWatchBuff.ignoreGrowthNectar = true;
-            voidWatchBuff.name = "Collector's Appraisal damage";
-            voidWatchBuff.isHidden = VoidWatch_HideBuff.Value;
+            voidWatchBuff.ignoreGrowthNectar = false;
+            voidWatchBuff.name = "Collector's Appraisal stacks";
+            voidWatchBuff.isHidden = false;
             voidWatchBuff.isCooldown = false;
             voidWatchBuff.iconSprite = Main.Assets.LoadAsset<Sprite>("Assets/icons/voidWatchBuff.png");
             ContentAddition.AddBuffDef(voidWatchBuff);
 
             VoidWatchBuff = voidWatchBuff;
+        }
+
+        public class VoidWatchBehavior : CharacterBody.ItemBehavior
+        {
+            public BuffIndex buffIndex = BuffIndex.None;
+            public float buffInterval = 1f;
+            public float buffTimer = 0f;
+
+            void FixedUpdate()
+            {
+                buffTimer += Time.fixedDeltaTime;
+                
+                int buffCount = body.GetBuffCount(buffIndex);
+
+                if (buffTimer >= buffInterval && body.outOfDanger && buffCount < VoidWatch_MaxBuffsv2.Value)
+                {
+                    if (buffCount == VoidWatch_MaxBuffsv2.Value - 1)
+                    {
+                        Util.PlaySound("Play_bandit2_m1_reload_bullet", body.gameObject);
+                    }
+
+                    body.AddBuff(buffIndex);
+
+                    buffTimer = 0f;
+                }
+            }
         }
     }
 }

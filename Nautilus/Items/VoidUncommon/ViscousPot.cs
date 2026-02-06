@@ -5,6 +5,9 @@ using R2API;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using HarmonyLib;
+using System.Collections.Generic;
+using System.Linq;
+using RoR2.Orbs;
 
 namespace Nautilus.Items
 {
@@ -13,7 +16,7 @@ namespace Nautilus.Items
         public static ViscousPot ViscousPot = new ViscousPot
         (
             "ViscousPot",
-            [ItemTag.Healing],
+            [ItemTag.Healing, ItemTag.Damage],
             ItemTier.VoidTier2
         );
     }
@@ -21,6 +24,8 @@ namespace Nautilus.Items
     /// <summary>
     ///     // Ver.1
     ///     Defensive alternative to Luminous Shot. I wanted an option for reducing barrier decay, and it gives you somewhat of a reason to take it over luminous shot. Boosts void watch as well
+    ///     // Ver.2
+    ///     While still keeping the 'barrier green item' niche, I decided to make this one require a more aggressive approach to get the benefit, and have some damage utility
     /// </summary>
     public class ViscousPot : ItemBase
     {
@@ -28,7 +33,7 @@ namespace Nautilus.Items
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC2/Items/IncreasePrimaryDamage/IncreasePrimaryDamage.asset").WaitForCompletion();
         public override GameObject itemPrefab => OverwritePrefabMaterials();
         public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/EliteVoid/matVoidInfestorMetal.mat").WaitForCompletion();
-        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/RegeneratingScrap/matRegeneratingScrapGoo.mat").WaitForCompletion();
+        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/Base/Clay/matClayBubble.mat").WaitForCompletion();
         public Material material2 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/voidstage/matVoidAsteroid.mat").WaitForCompletion();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/viscousPot.png");
 
@@ -53,25 +58,65 @@ namespace Nautilus.Items
             1f,
             0.05f
         );
-        public static ConfigItem<float> ViscousPot_BarrierAdd = new ConfigItem<float>
+        public static ConfigItem<float> ViscousPot_BarrierAddv2 = new ConfigItem<float>
         (
             "Void uncommon: Viscous Pot",
-            "Barrier on secondary use",
-            "Fraction of barrier added on secondary skill use.",
-            0.075f,
+            "Barrier on hit",
+            "Fraction of barrier added when a viscous orb hits an enemy.",
+            0.05f,
             0f,
             1f,
             0.05f
         );
-        public static ConfigItem<float> ViscousPot_BarrierAddStack = new ConfigItem<float>
+        public static ConfigItem<int> ViscousPot_OrbAmountv2 = new ConfigItem<int>
         (
             "Void uncommon: Viscous Pot",
-            "Barrier on secondary use (per stack)",
-            "Fraction of barrier added on secondary skill use per additional stack.",
-            0.075f,
-            0f,
+            "Viscous orb amount",
+            "Amount of orbs launched per secondary skill.",
+            3,
             1f,
-            0.05f
+            6f,
+            1f
+        );
+        public static ConfigItem<int> ViscousPot_OrbAmountStackv2 = new ConfigItem<int>
+        (
+            "Void uncommon: Viscous Pot",
+            "Viscous orb amount (per stack)",
+            "Amount of orbs launched per secondary skill, per additional stack.",
+            1,
+            1f,
+            6f,
+            1f
+        );
+        public static ConfigItem<float> ViscousPot_OrbRadiusv2 = new ConfigItem<float>
+        (
+            "Void uncommon: Viscous Pot",
+            "Viscous orb radius",
+            "Meters radius where enemies can be targeted by orbs.",
+            20f,
+            1f,
+            60f,
+            1f
+        );
+        public static ConfigItem<float> ViscousPot_OrbRadiusStackv2 = new ConfigItem<float>
+        (
+            "Void uncommon: Viscous Pot",
+            "Viscous orb radius (per stack)",
+            "Meters radius where enemies can be targeted by orbs, per additional stack.",
+            8f,
+            1f,
+            60f,
+            1f
+        );
+        public static ConfigItem<float> ViscousPot_OrbDamagev2 = new ConfigItem<float>
+        (
+            "Void uncommon: Viscous Pot",
+            "Viscous orb damage",
+            "Fractional damage from viscous orbs.",
+            2f,
+            0f,
+            6f,
+            0.1f
         );
 
         public GameObject OverwritePrefabMaterials()
@@ -88,7 +133,6 @@ namespace Nautilus.Items
 
             return ret;
         }
-
         
         // Tokens
         public override void FormatDescriptionTokens()
@@ -102,8 +146,12 @@ namespace Nautilus.Items
                 (
                     Language.currentLanguage.GetLocalizedStringByToken(descriptionToken),
                     ViscousPot_DecayReduction.Value * 100f,
-                    ViscousPot_BarrierAdd.Value * 100f,
-                    ViscousPot_BarrierAddStack.Value * 100f
+                    ViscousPot_OrbAmountv2.Value,
+                    ViscousPot_OrbAmountStackv2.Value,
+                    ViscousPot_OrbRadiusv2.Value,
+                    ViscousPot_OrbRadiusStackv2.Value,
+                    ViscousPot_OrbDamagev2.Value * 100f,
+                    ViscousPot_BarrierAddv2.Value * 100f
                 )
             );
         }
@@ -121,7 +169,7 @@ namespace Nautilus.Items
                 }
             };
 
-            // Barrier on skill
+            // Orbs on skill
             On.RoR2.CharacterBody.OnSkillActivated += (orig, self, genericSkill) =>
             {
                 if (GetItemCountEffective(self) <= 0 || !self.healthComponent)
@@ -130,20 +178,87 @@ namespace Nautilus.Items
                 }
 
                 int itemCount = GetItemCountEffective(self);
-                float barrierFraction = ViscousPot_BarrierAdd.Value + (ViscousPot_BarrierAddStack.Value * (itemCount - 1));
 
                 if (self.bodyIndex == BodyCatalog.SpecialCases.RailGunner())
                 {
                     if ((object)self.skillLocator.primary == genericSkill && self.canAddIncrasePrimaryDamage)
                     {
-                        self.healthComponent.AddBarrier(self.maxHealth * barrierFraction);
+                        FireOrbs(self, itemCount);
                     }
                 }
                 else if ((genericSkill.skillDef.autoHandleLuminousShot || self.canAddIncrasePrimaryDamage) && (object)self.skillLocator.secondary == genericSkill)
                 {
-                    self.healthComponent.AddBarrier(self.maxHealth * barrierFraction);
+                    FireOrbs(self, itemCount);
                 }
             };
+        }
+
+        public void FireOrbs(CharacterBody body, int itemCount)
+        {
+            List<Collider> colliders = Physics.OverlapSphere(body.corePosition, ViscousPot_OrbRadiusv2.Value + (ViscousPot_OrbRadiusStackv2.Value * (itemCount - 1))).ToList();
+            colliders = colliders.OrderBy(i => Guid.NewGuid()).ToList();
+            
+            int orbCount = ViscousPot_OrbAmountv2.Value + (ViscousPot_OrbAmountStackv2.Value * (itemCount - 1));
+
+            foreach(Collider collider in colliders)
+            {
+                if (orbCount <= 0)
+                {
+                    break;
+                }
+
+                GameObject gameObject = collider.gameObject;
+                if (gameObject.GetComponentInChildren<CharacterBody>())
+                {
+                    CharacterBody colliderBody = gameObject.GetComponentInChildren<CharacterBody>();
+                    if (colliderBody.healthComponent && colliderBody.healthComponent.health > 0f && colliderBody.teamComponent && colliderBody.teamComponent.teamIndex != body.teamComponent.teamIndex)
+                    {
+                        ViscousPotOrb viscousPotOrb = new ViscousPotOrb();
+                        viscousPotOrb.attacker = body.gameObject;
+                        viscousPotOrb.target = colliderBody.mainHurtBox;
+                        viscousPotOrb.teamIndex = body.teamComponent.teamIndex;
+                        viscousPotOrb.origin = body.corePosition;
+
+                        OrbManager.instance.AddOrb(viscousPotOrb);
+
+                        orbCount--;
+                    }
+                }
+            }
+        }
+
+        public class ViscousPotOrb : RoR2.Orbs.SquidOrb
+        {
+            public override void OnArrival()
+            {
+                if (!target)
+                {
+                    return;
+                }
+
+                CharacterBody attackerBody = attacker.GetComponent<CharacterBody>();
+
+                if (target.healthComponent && attackerBody.healthComponent && attackerBody.teamComponent && target.teamIndex != attackerBody.teamComponent.teamIndex)
+                {
+                    DamageInfo damageInfo = new DamageInfo();
+                    damageInfo.damage = attackerBody.damage * ViscousPot_OrbDamagev2.Value;
+                    damageInfo.attacker = attacker;
+                    damageInfo.inflictor = null;
+                    damageInfo.force = Vector3.zero;
+                    damageInfo.crit = false;
+                    damageInfo.procChainMask = procChainMask;
+                    damageInfo.procCoefficient = 0f;
+                    damageInfo.position = target.transform.position;
+                    damageInfo.damageColorIndex = DamageColorIndex.Void;
+                    damageInfo.damageType = damageType;
+                    damageInfo.inflictedHurtbox = target;
+                    target.healthComponent.TakeDamage(damageInfo);
+                    GlobalEventManager.instance.OnHitEnemy(damageInfo, target.healthComponent.gameObject);
+                    GlobalEventManager.instance.OnHitAll(damageInfo, target.healthComponent.gameObject);
+
+                    attackerBody.healthComponent.AddBarrier(attackerBody.maxBarrier * ViscousPot_BarrierAddv2.Value);
+                }
+            }
         }
     }
 }

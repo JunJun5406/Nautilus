@@ -29,9 +29,9 @@ namespace Nautilus.Items
         public override bool Enabled => Xenobacteria_Enabled.Value;
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/Base/AlienHead/AlienHead.asset").WaitForCompletion();
         public override GameObject itemPrefab => OverwritePrefabMaterials();
-        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/matVoidmetalTrim.mat").WaitForCompletion();
-        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/CloverVoid/matCloverVoidRing.mat").WaitForCompletion();
-        public Material material2 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/HealingPotion/matHealingPotionGlass.mat").WaitForCompletion();
+        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/gauntlets/matGTVoidTerrain.mat").WaitForCompletion();
+        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/PortalVoid/matPortalVoidCenter.mat").WaitForCompletion();
+        public Material material2 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matNullifierFracturePortalFull.mat").WaitForCompletion();
         public Material material3 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/GameModes/InfiniteTowerRun/ITAssets/matVoidWhale.mat").WaitForCompletion();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/xenobacteria.png");
 

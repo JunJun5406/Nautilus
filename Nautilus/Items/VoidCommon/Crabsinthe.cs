@@ -52,7 +52,7 @@ namespace Nautilus.Items
             "Void common: Crabsinthe",
             "Regen boost",
             "Grants a regen boost with this multiplier.",
-            0.25f,
+            0.5f,
             0f,
             6f,
             0.1f
@@ -62,7 +62,7 @@ namespace Nautilus.Items
             "Void common: Crabsinthe",
             "Regen boost (Per stack)",
             "Grants a regen boost with this multiplier per additional stack.",
-            0.25f,
+            0.5f,
             0f,
             6f,
             0.1f

@@ -1,0 +1,206 @@
+using RoR2;
+using Nautilus.Configuration;
+using System;
+using R2API;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using HarmonyLib;
+using RoR2.Orbs;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace Nautilus.Items
+{
+    public static partial class ItemInit
+    {
+        public static SkullSprout SkullSprout = new SkullSprout
+        (
+            "Skullsprout",
+            [ItemTag.Damage],
+            ItemTier.VoidTier3
+        );
+    }
+
+    /// <summary>
+    ///     // Ver.1
+    ///     Adds randomness to collapse effects as a 'downside', but it's really an upside since you can far more easily farm cooldown reduction off of it
+    ///     Potentially far more consistent than Brainstalks, want to make sure it doesn't outshine it too much
+    /// </summary>
+    public class SkullSprout : ItemBase
+    {
+        public override bool Enabled => SkullSprout_Enabled.Value;
+        public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/Base/KillEliteFrenzy/KillEliteFrenzy.asset").WaitForCompletion();
+        public override GameObject itemPrefab => OverwritePrefabMaterials();
+        public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/Base/artifactworld/matArtifactBloody.mat").WaitForCompletion();
+        public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/SlowOnHitVoid/BaubleVoid.mat").WaitForCompletion();
+        public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/skullSprout.png");
+
+        public SkullSprout(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
+        base(_name, _tags, _tier, _canRemove, _isConsumed, _hidden){}
+
+        // Config
+        public static ConfigItem<bool> SkullSprout_Enabled = new ConfigItem<bool>
+        (
+            "Void legendary: Skullsprout",
+            "Item enabled",
+            "Should this item appear in runs?",
+            true
+        );
+        public static ConfigItem<float> SkullSprout_CollapseChance = new ConfigItem<float>
+        (
+            "Void legendary: Skullsprout",
+            "Collapse chance",
+            "Fractional chance to collapse a random enemy within a radius on hit.",
+            0.05f,
+            0.05f,
+            1f,
+            0.05f
+        );
+        public static ConfigItem<float> SkullSprout_CollapseRadius = new ConfigItem<float>
+        (
+            "Void legendary: Skullsprout",
+            "Random collapse radius",
+            "Meters radius where a hit can potentially collapse an enemy.",
+            40f,
+            1f,
+            60f,
+            1f
+        );
+        public static ConfigItem<float> SkullSprout_CollapseCooldownReduction = new ConfigItem<float>
+        (
+            "Void legendary: Skullsprout",
+            "Collapse cooldown reduction",
+            "Collapse reduces your cooldowns by this many seconds on trigger.",
+            0.4f,
+            0.1f,
+            2f,
+            0.1f
+        );
+        public static ConfigItem<float> SkullSprout_CollapseCooldownReductionStack = new ConfigItem<float>
+        (
+            "Void legendary: Skullsprout",
+            "Collapse cooldown reduction (per stack)",
+            "Collapse reduces your cooldowns by this many seconds on trigger, per additional stack.",
+            0.4f,
+            0.1f,
+            2f,
+            0.1f
+        );
+
+        public GameObject OverwritePrefabMaterials()
+        {
+            GameObject ret = Main.Assets.LoadAsset<GameObject>("Assets/prefabs/skullSprout.prefab");
+
+            Material[] materials =
+            {
+                material0,
+                material1
+            };
+            ret.GetComponentInChildren<MeshRenderer>().SetMaterialArray(materials);
+
+            return ret;
+        }
+
+        // Tokens
+        public override void FormatDescriptionTokens()
+        {
+            string descriptionToken = ItemDef.descriptionToken;
+
+            LanguageAPI.AddOverlay
+            (
+                descriptionToken,
+                String.Format
+                (
+                    Language.currentLanguage.GetLocalizedStringByToken(descriptionToken),
+                    SkullSprout_CollapseChance.Value * 100f,
+                    SkullSprout_CollapseRadius.Value,
+                    SkullSprout_CollapseCooldownReduction.Value,
+                    SkullSprout_CollapseCooldownReductionStack.Value
+                )
+            );
+        }
+
+        // Hooks
+        public override void RegisterHooks()
+        {
+            // On-hit trigger
+            On.RoR2.GlobalEventManager.OnHitEnemy += (orig, self, damageInfo, victimObject) =>
+            {
+                orig(self, damageInfo, victimObject);
+
+                if (!damageInfo.procChainMask.HasProc(ProcType.FractureOnHit) && !damageInfo.rejected && damageInfo.attacker && damageInfo.attacker.TryGetComponent(out CharacterBody attackerBody) && attackerBody.master && victimObject.TryGetComponent(out CharacterBody victimBody) && victimBody.healthComponent)
+                {
+                    int itemCount = GetItemCountEffective(attackerBody);
+                    
+                    if (itemCount > 0 && attackerBody.teamComponent && victimBody.teamComponent)
+                    {
+                        if (Util.CheckRoll(SkullSprout_CollapseChance.Value * 100f * damageInfo.procCoefficient, attackerBody.master.luck, attackerBody.master))
+                        {
+                            DotController.DotDef dotDef = DotController.GetDotDef(DotController.DotIndex.Fracture);
+                            DotController.InflictDot(victimBody.gameObject, damageInfo.attacker, victimBody.mainHurtBox, DotController.DotIndex.Fracture, dotDef.interval);
+                        }
+                    }
+                }
+            };
+
+            // On receipt of fracture damage, reduce attacker's cooldowns
+            On.RoR2.HealthComponent.TakeDamageProcess += (orig, self, damageInfo) =>
+            {
+                if (damageInfo.attacker && damageInfo.dotIndex == DotController.DotIndex.Fracture)
+                {
+                    CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
+                    
+                    if (attackerBody && attackerBody.skillLocator)
+                    {
+                        int itemCount = GetItemCountEffective(attackerBody);
+                        if (itemCount > 0)
+                        {
+                            attackerBody.skillLocator.DeductCooldownFromAllSkillsServer(SkullSprout_CollapseCooldownReduction.Value + (SkullSprout_CollapseCooldownReductionStack.Value * (itemCount - 1)));
+                        }
+                    }
+                }
+
+                orig(self, damageInfo);   
+            };
+
+            // Fracture randomness
+            On.RoR2.DotController.InflictDot_refInflictDotInfo += (orig, ref self) =>
+            {
+                if (self.dotIndex == DotController.DotIndex.Fracture && self.hitHurtBox && self.attackerObject && self.attackerObject.TryGetComponent(out CharacterBody attackerBody) && attackerBody.inventory && self.victimObject.TryGetComponent(out CharacterBody victimBody) && victimBody.healthComponent)
+                {
+                    int itemCount = GetItemCountEffective(attackerBody);
+
+                    if (itemCount > 0 && attackerBody.teamComponent && victimBody.teamComponent)
+                    {
+                        CharacterBody foundBody = victimBody;
+
+                        List<Collider> colliders = Physics.OverlapSphere(self.hitHurtBox.transform.position, SkullSprout_CollapseRadius.Value).ToList();
+                        colliders = colliders.OrderBy(i => Guid.NewGuid()).ToList();
+                        
+                        foreach(Collider collider in colliders)
+                        {
+                            GameObject gameObject = collider.gameObject;
+                            if (gameObject.GetComponentInChildren<CharacterBody>())
+                            {
+                                CharacterBody colliderBody = gameObject.GetComponentInChildren<CharacterBody>();
+                                if (colliderBody.healthComponent && colliderBody.healthComponent.health > 0f && colliderBody.teamComponent && colliderBody.teamComponent.teamIndex != attackerBody.teamComponent.teamIndex)
+                                {
+                                    foundBody = colliderBody;
+                                }
+                            }
+                        }
+
+                        if (foundBody != victimBody)
+                        {
+                            self.victimObject = foundBody.gameObject;
+                            self.hitHurtBox = foundBody.mainHurtBox;
+                            CollapseInfectOrb.CreateInfectOrb(victimBody.corePosition, foundBody.mainHurtBox);
+                        }
+                    }
+                }
+
+                orig(ref self);
+            };
+        }
+    }
+}
