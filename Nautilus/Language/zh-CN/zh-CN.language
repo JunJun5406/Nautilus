@@ -1,0 +1,66 @@
+{
+    "zh-CN": {
+        "NT_EXPANSION_NAME": "鹦鹉螺",
+        "NT_EXPANSION_DESC": "将《鹦鹉螺》扩展包中的内容添加到游戏中。",
+
+        "NT_ITEM_WELLIES_NAME": "浸水手套靴",
+        "NT_ITEM_WELLIES_PICKUP": "命中时削弱空中敌人并将其拽至地面。<style=cIsVoid>腐化所有登山靴。</style>",
+        "NT_ITEM_WELLIES_DESC": "命中空中敌人会将其向下拖拽<style=cStack>（每层提升拖拽力度）</style>，并使其陷入<style=cIsDamage>虚弱</style>状态<style=cIsDamage>{0}</style>秒<style=cStack>（每层+{1}秒）</style>，<style=cIsDamage>降低其30点护甲，同时减少40%移动速度与伤害。</style><style=cIsVoid>腐化所有登山靴。</style>",
+        "NT_ITEM_WELLIES_LORE": "<style=cStack><UES曙光号回收计划></style>\n<style=cStack><音频记录转录稿></style>\n<style=cStack><回收地点：巨型虚空异象附近发现的头盔，旁边有只靴子但我碰都不想碰></style>\n<style=cStack><附注：这伙计太惨了></style>\n\n<style=cStack>UES-1 = 突击队员兰斯·伯纳德，灾难前最后现身于UES曙光号，已失踪</style>\n<style=cStack>UES-2 = 身份不明的UES雇员，推定失踪</style>\n\n<style=cStack><转录开始></style>\n\nUES-1：嘿，兄弟。\n\nUES-2：咋了？\n\nUES-1：<style=cSub>[含糊低语]</style>\n\nUES-2：咋回事啊？\n\nUES-1：你知道战壕足吗？\n\nUES-2：卧槽。\n\nUES-1：可不是嘛。<style=cSub>[闷哼]</style>\n\nUES-2：要不咱歇会？\n\nUES-1：算了，就是…<style=cSub>[长时间沉默]</style>我还指望你有啥解药之类的能帮帮我。倒不疼，就是感觉这脚没法再走了。\n\nUES-2：我哪有啊。要不…我瞅瞅？\n\n<style=cSub>[两人似停下脚步找地方歇息]</style>\n\n<style=cSub>[尖锐声响，疑似鲸鸣（？）]</style>\n\nUES-1：<style=cSub>[费力喘息]</style>\n\nUES-2：能让我看看不？\n\nUES-1：别，我自己来。真不疼。\n\n<style=cSub>[湿黏的落地声，推定是UES-1的脚骸]</style>\n\nUES-2：我的天。\n\nUES-1：那是我的（？）\n\n<style=cSub>[两人皆作呕]</style>\n\nUES-2：<style=cSub>[脏话]</style>\n\n<style=cSub>[鲸鸣（？）]</style>\n\n<style=cStack><转录结束></style>",
+
+        "NT_ITEM_CRABSINTHE_NAME": "蟹酿苦艾酒",
+        "NT_ITEM_CRABSINTHE_PICKUP": "提升被动生命恢复速率。<style=cIsVoid>腐化所有强力万能药。</style>",
+        "NT_ITEM_CRABSINTHE_DESC": "被动生命恢复速率提升<style=cIsHealing>{0}%</style><style=cStack>（每层+{1}%）</style>。<style=cIsVoid>腐化所有强力万能药。</style>",
+        "NT_ITEM_CRABSINTHE_LORE": "<style=cStack><UES曙光号回收计划></style>\n<style=cStack><实体样本></style>\n<style=cStack><回收地点：我的外勤办公室，平安远航阿尔法2号空投区></style>\n<style=cStack><附注：这原本是1978年的绝版苦艾酒，以前可不是这副模样></style>\n\n<style=cStack>分析总结：杰德·S</style>\n\n<style=cStack><总结开始></style>\n\n该样本原为一瓶苦艾酒，经历了与其他研究样本相似的虚空转化过程，却产生了独特的异变。\n\n这瓶酒最显著的异常点在于，其内的液体似乎永远不会耗尽。我在瓶底内侧检测到了微型虫洞的特征（与此前发现的其他“虚空传送门”相似），这解释了这一异象，却无法解答液体的来源。长时间的引流测试表明，在我们未知的某处，存在着一处储量庞大的该类液体源头。\n\n毒理学分析显示此物可安全饮用，其酒精浓度与原版苦艾酒相近，建议适量饮用。实验发现其口感果香浓郁、质地粘稠，类似黑莓果酱味的烈酒。需开展进一步实验。\n\n瓶身标签的文字已完全异变，转化为其他实验室报告中提及的虚空样本专属文字——暂未找到更合适的命名，我们称其为“蟹语”。多亏你协助还原了原始文字，若语言学家能破解这种文字，我们就能确认转化过程中是否保留了原始语义。\n\n队长，真搞不懂你把这东西交给我时为啥一脸失望。这玩意儿简直绝了！\n\n<style=cStack><总结结束></style>",
+
+        "NT_ITEM_VOIDWATCH_NAME": "收藏家的鉴定怀表",
+        "NT_ITEM_VOIDWATCH_PICKUP": "高生命值时造成额外伤害。<style=cIsVoid>腐化所有易碎手表。</style>",
+        "NT_ITEM_VOIDWATCH_DESC": "脱离危险状态时，每秒获得一层<style=cIsDamage>可叠加增益</style>，使你的<style=cIsDamage>下一次攻击伤害提升{0}%</style><style=cStack>（每层+{1}%）</style>。<style=cIsDamage>最多可储存{2}×{0}%</style><style=cStack>（每层+{2}×{1}%）</style><style=cIsDamage>的额外伤害。</style><style=cIsVoid>腐化所有易碎手表。</style>",
+        "NT_ITEM_VOIDWATCH_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><实体样本></style> \n<style=cStack><回收地点：就在门口！></style> \n<style=cStack><附注：无></style> \n\n<style=cStack>初步分析总结：杰德·S</style> \n\n<style=cStack><总结开始></style> \n\n我不常出外勤。这次出去本就满心紧张（最近魔像闹得厉害…），所以当在实验室正门口发现样本时，你能想象我有多惊喜！\n\n这是一块机械怀表，触感极度脆化，看似已被岁月侵蚀锈蚀数千年。我一碰它就碎了，后续处理还请务必小心。\n\n更诡异的是，怀表被放在一块剪贴板上，板上写满了无法辨识的象形文字。我完全看不懂内容，不过…这并非科学分析结论，但我盯着这些文字久了，竟能**感知**到其中的含义。比如这句，大意是：\n\n“机械故障，退回寄件人！”\n\n<style=cStack><总结结束></style>",
+
+        "NT_ITEM_VISCOUSPOT_NAME": "粘稠秘罐",
+        "NT_ITEM_VISCOUSPOT_PICKUP": "降低护盾衰减速度，使用次要技能时窃取附近敌人的护盾。<style=cIsVoid>腐化所有发光弹丸。</style>",
+        "NT_ITEM_VISCOUSPOT_DESC": "<style=cIsHealing>降低{0}%护盾衰减速度。</style>使用次要技能时，会向<style=cisUtility>{3}米</style><style=cStack>（每层+{4}米）</style>范围内的敌人发射最多<style=cIsDamage>{1}</style><style=cStack>（每层+{2}枚）</style>枚<style=cIsDamage>粘稠法球</style>，造成<style=cIsDamage>{5}%</style>伤害，命中后为你提供<style=cIsHealing>{6}%</style>临时护盾。<style=cIsVoid>腐化所有发光弹丸。</style>",
+        "NT_ITEM_VISCOUSPOT_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><实体样本></style> \n<style=cStack><回收地点：取自虚空种子内部的保育舱></style> \n<style=cStack><附注：发现任何相关踪迹请立即向队长报告！！！></style> \n\n<style=cStack>分析总结：杰德·S </style> \n\n<style=cStack><转录开始></style> \n\n我本打算继续实验室分析工作，可罐装样本竟不翼而飞。我只离开短短10分30秒，这东西就莫名其妙逃出了容器（重点是密封完好无损！！）\n\n我早怀疑罐内的粘稠胶状物质是活的有机体，却没想到它竟聪明到能不留痕迹地逃出实验室。更糟的是，我还未确认它是否具备伤害人类的能力。接下来几小时，我得把桌子床底都翻个遍了…\n\n别跟我说我该一直盯着它——我还能咋办？难不成禁止科研团队上厕所？！\n\n<style=cStack><转录结束></style>",
+
+        "NT_ITEM_PALESTAR_NAME": "苍白星骸",
+        "NT_ITEM_PALESTAR_PICKUP": "将宝箱掉落转化为虚空潜能，可通过虚空摇篮充能。<style=cIsVoid>腐化所有销售之星。</style>",
+        "NT_ITEM_PALESTAR_DESC": "打开宝箱会消耗此物品的所有层，将宝箱奖励转化为同等稀有度的<style=cIsVoid>虚空潜能</style>，可从<style=cIsVoid>3件</style><style=cStack>（每层+1件）</style><style=cIsVoid>虚空物品中选择其一。</style><style=cisUtility>使用一次虚空摇篮后，可恢复此物品的所有层。</style><style=cIsVoid>腐化所有销售之星。</style>",
+        "NT_ITEM_PALESTAR_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><实体样本></style> \n<style=cStack><回收地点：取自掠夺者尸体的甲壳之上></style> \n<style=cStack><附注：若可能，请存放于反重力隔离舱></style> \n\n<style=cStack>初步分析总结：哈维·D</style> \n\n<style=cStack><总结开始></style> \n\n那些螃蟹比看上去要聪明得多。它们竟用我们的残骸打造新武器——有只螃蟹差点用一把疑似“蟹化”导弹发射器轰穿我的脑袋。我设下埋伏好不容易将其击杀，带回了这把发射器，还意外在它的腿上发现了一件额外的战利品：一只直接来自虚空的海星。\n\n我刚捡起这只生物，它就瞬间传送到我的武器上，开始啃食炮管！我正要拍飞它，却发现它啃食的地方竟吐出了新的物质——一种紫色的硬壳物质——直到这把枪彻底变成了一件全新的装备。\n\n好吧，好奇心终究战胜了理智，现在我连武器都没了。这海星压根不是什么天才枪械匠。返程的路注定艰难，但若是能找到这些腐化样本的源头，一切都值得！\n\n就在我写下这些文字时，我发现宇航服的手套也开始硬化，逐渐化作一对蟹钳…\n\n科研团队肯定会喜欢这个发现的。\n\n<style=cStack><总结结束></style>",
+
+        "NT_ITEM_PALESTARCONSUMED_NAME": "枯竭星骸",
+        "NT_ITEM_PALESTARCONSUMED_PICKUP": "需在<style=cIsVoid>虚空摇篮</style>处充能。",
+        "NT_ITEM_PALESTARCONSUMED_DESC": "需在<style=cIsVoid>虚空摇篮</style>处充能。",
+        "NT_ITEM_PALESTARCONSUMED_LORE": "<style=cStack>无可用数据…</style>",
+
+        "NT_ITEM_HYDRATOOTH_NAME": "海德拉之牙",
+        "NT_ITEM_HYDRATOOTH_PICKUP": "坍缩效果变为传染性，并附带虚弱效果。<style=cIsVoid>腐化所有剧毒荆棘。</style>",
+        "NT_ITEM_HYDRATOOTH_DESC": "攻击时有<style=cIsDamage>{0}%</style>几率触发<style=cIsDamage>坍缩</style>，坍缩造成伤害时，有<style=cIsDamage>{1}%</style><style=cStack>（每层+{2}%）</style>几率使<style=cIsDamage>5米范围内的另一名敌人陷入坍缩</style>。<style=cIsDamage>受坍缩影响的敌人护甲降低{3}点，移动速度降低{4}%。</style><style=cIsVoid>腐化所有剧毒荆棘。</style>",
+        "NT_ITEM_HYDRATOOTH_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><UES内部消息记录></style> \n<style=cStack><回收地点：无></style> \n<style=cStack><附注：2058/11/03></style> \n\n<style=cStack>jadesly123 = 杰德·S（UES平安远航号，科研团队学徒）</style> \n<style=cStack>Mira Li = 米拉·L（UES平安远航号，科研团队主管）</style> \n\n<style=cStack><转录开始></style> \n\njadesly123 <style=cStack>(2058/11/03 11:56)</style>：干饭不？ \n\njadesly123 <style=cStack>(2058/11/03 17:01)</style>：我找到罐装样本了，已经送回实验室，现在放在全闪烁密封容器里（按你建议用了磁能矿），为之前造成的麻烦说声抱歉！！ \n\njadesly123 <style=cStack>(2058/11/03 21:10)</style>：对了，我能申请几个加班工时不？我最近一直在研究这块怀表的走时规律，看似随机但指针的转动好像有模式。想看看不？ \n\nMira Li <style=cStack>(2058/11/03 21:32)</style>：[已读] \n\njadesly123 <style=cStack>(2058/11/03 21:58)</style>：抱歉是不是忙了？我晚点再发～对了海德拉是真的存在吗？还是哈维在开玩笑？他说你肯定知道 \n\nMira Li <style=cStack>(2058/11/04 01:20)</style>：[已读] \n\n<style=cStack><转录结束></style>",
+
+        "NT_ITEM_SHIMMERINGNAUTILUS_NAME": "流光鹦鹉螺",
+        "NT_ITEM_SHIMMERINGNAUTILUS_PICKUP": "抵御连续攻击并进行反击。<style=cIsVoid>腐化所有粉碎之正义。</style>",
+        "NT_ITEM_SHIMMERINGNAUTILUS_DESC": "<style=cIsHealing>降低{0}%所有受到的伤害。</style>当攻击者对你造成<style=cIsDamage>{1}次</style>攻击后，会触发一枚法球，对其自身造成<style=cIsDamage>{2}%伤害</style><style=cStack>（每层+{3}%）</style>。<style=cIsVoid>腐化所有粉碎之正义。</style>",
+        "NT_ITEM_SHIMMERINGNAUTILUS_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><实体样本></style> \n<style=cStack><回收地点：平安远航阿尔法2号空投区以南约21英里，未探索的神庙遗迹></style> \n<style=cStack><附注：务必小心处理！！！></style> \n\n<style=cStack>初步分析总结：哈维·D</style> \n\n<style=cStack><总结开始></style> \n\n我发现这枚小海螺时，意外在旁边看到一张紫色便利贴，上面用英文写着：\n\n“你在忧心什么？无妨。轻敲此壳五次，好运伴身！”\n\n但当我看到海螺周围散落着我们一名突击队员的血肉残骸时，只剩满心寒意——甲虫几乎将其啃食殆尽，我甚至辨认不出是谁——或许是乔丹？\n\n我明智地没有遵照纸条的指示，而是用外勤光谱仪检测了海螺的材质。其内部含有极不稳定的磁能矿，受到丝毫压力便会爆炸。\n\n抛开这些虚空异象不谈…这到底是为什么？谁会开如此残忍的玩笑？\n\n我们的哪个同伴中招了？\n\n<style=cStack><总结结束></style>",
+
+        "NT_ITEM_MOTHEROFPEARL_NAME": "珍珠母贝",
+        "NT_ITEM_MOTHEROFPEARL_PICKUP": "收集金块时发射一轮导弹。<style=cIsVoid>腐化所有战争债券。</style>",
+        "NT_ITEM_MOTHEROFPEARL_DESC": "收集金块时，发射<style=cIsDamage>{0}枚导弹</style>，每枚造成<style=cIsDamage>{1}%伤害</style><style=cStack>（每层+{2}%）</style>。<style=cShrine>有{3}%的固定几率将任意拾取物转化为金块。</style><style=cIsVoid>腐化所有战争债券。</style>",
+        "NT_ITEM_MOTHEROFPEARL_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><信号转录稿></style> \n<style=cStack><信号来源：未知></style> \n<style=cStack><附注：无></style> \n\n<style=cStack><转录开始></style> \n\n211405 \n\n211405 \n\n211405 \n\n装置 \n\n储藏点 \n\n武器 \n\n[30秒沉默] \n\n211405 \n\n211405 \n\n211405 \n\n装置 \n\n武器 \n\n增殖 \n\n[30秒沉默] \n\n211402 \n\n211402 \n\n211402 \n\n装置 \n\n武器 \n\n增殖 \n\n<style=cStack><转录结束></style>",
+
+        "NT_ITEM_XENOBACTERIA_NAME": "异星细菌",
+        "NT_ITEM_XENOBACTERIA_PICKUP": "提升全队攻击速度。<style=cIsVoid>腐化所有外星脑袋。</style>",
+        "NT_ITEM_XENOBACTERIA_DESC": "提升<style=cIsDamage>你及所有队友的攻击速度</style><style=cIsDamage>{0}%</style><style=cStack>（每层+{1}%）</style>。<style=cIsVoid>腐化所有外星脑袋。</style>",
+        "NT_ITEM_XENOBACTERIA_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><信号转录稿></style> \n<style=cStack><信号来源：未知></style> \n<style=cStack><附注：若能提供具体位置就好了></style> \n\n<style=cStack><转录开始></style> \n\n警告 \n\n警告 \n\n有生命危险 \n\n禁止进入传送门 \n\n病毒，传染性极强，致命 \n\n无需接触即可感染 \n\n可穿透宇航服感染 \n\n禁止进入传送门 \n\n[重复播放] \n\n<style=cStack><转录结束></style>",
+
+        "NT_ITEM_ALTEREDSOUL_NAME": "异变之魂",
+        "NT_ITEM_ALTEREDSOUL_PICKUP": "每次击杀都会复制你的击杀触发效果。<style=cIsVoid>腐化所有仪式用匕首。</style>",
+        "NT_ITEM_ALTEREDSOUL_DESC": "击杀敌人会掉落一枚水晶，使你的击杀触发效果额外触发<style=cisUtility>{0}次</style><style=cStack>（每层+{1}次）</style>。<style=cIsVoid>腐化所有仪式用匕首。</style>",
+        "NT_ITEM_ALTEREDSOUL_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><音频记录转录稿></style> \n<style=cStack><回收地点：平安远航贝塔1号空投区，反重力接收器></style> \n<style=cStack><附注：无></style> \n\n<style=cStack>实验体1 = 身份不明，未确认是否为UES雇员</style> \n<style=cStack>实验体2 = 身份不明，未确认是否为UES雇员</style> \n\n<style=cStack><转录开始></style> \n\n实验体1：你们把我关在哪了？ \n\n实验体2：[无法辨识] \n\n实验体1：为什么把我囚禁在这里？ \n\n实验体2：[无法辨识] \n\n实验体1：我还要多久才能自由？ \n\n实验体2：[沉默] \n\n实验体1：回答我。 \n\n实验体2：[沉默] \n\n实验体1：求求你了… \n\n实验体2：[沉默] \n\n<style=cStack><转录结束></style>",
+
+        "NT_ITEM_SKULLSPROUT_NAME": "颅生芽",
+        "NT_ITEM_SKULLSPROUT_PICKUP": "坍缩会随机影响敌人，并降低你的技能冷却。<style=cIsVoid>腐化所有脑部跟踪。</style>",
+        "NT_ITEM_SKULLSPROUT_DESC": "攻击时有<style=cIsDamage>{0}%</style>几率触发<style=cIsDamage>坍缩</style>。<style=cIsVoid>所有坍缩效果触发时，会随机转移至{1}米范围内的另一名敌人身上。</style>当坍缩对敌人造成伤害时，<style=cisUtility>所有技能冷却时间减少{2}秒</style><style=cStack>（每层+{3}秒）</style>。<style=cIsVoid>腐化所有脑部跟踪。</style>",
+        "NT_ITEM_SKULLSPROUT_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><实体样本></style> \n<style=cStack><回收地点：阵亡的UES突击队员></style> \n<style=cStack><附注：无></style> \n\n<style=cStack>分析总结：米拉·L </style> \n\n<style=cStack><转录开始></style> \n\n对这颗颅骨的物质年代检测得出了一个看似不可能的结果：这名突击队员在虚空中度过了至少五千年。在这漫长的岁月里，他活了多久？\n\n颅骨上伸出数根茎须，属于一种生长在颅内的寄生植物，其基部的芽体中仍残留着灰质痕迹。大脑很可能是它的养分来源。\n\n这些茎须会附着在感知到的任何有机物质上，却只朝着大脑组织生长。它们最偏好的入侵角度是眼睛与鼻腔。它们以智慧为食，对甲虫幼虫几乎视而不见。\n\n他死前经历了什么？他的意识是与这株芽体共生，还是早已独自消散？\n\n这株芽体无需水分即可存活，但离开颅骨后便会逐渐干枯。它或许是依靠微量的大脑组织维持生命。但这点物质显然不足以支撑其存活，更别说延续五千年。\n\n在那五千年里，他活了多久？\n\n<style=cStack><转录结束></style>"
+    }
+}
