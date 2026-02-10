@@ -67,7 +67,7 @@ namespace Nautilus.Items
             "Void uncommon: Pale Star",
             "Void potential choices",
             "Amount of choices offered by Pale Star's void potential.",
-            3,
+            2,
             1f,
             6f,
             1f
@@ -171,93 +171,109 @@ namespace Nautilus.Items
                     int itemCount = GetItemCountEffective(characterBody);
                     List<PickupIndex> voidedDrops = new();
                     List<UniquePickup> voidedDropsUnique = new();
-                    PickupDef currentPickupDef;
+                    PickupDef currentPickupDef = null;
 
                     List<UniquePickup> generatedDropsList = new List<UniquePickup>(); // why
                     chestBehavior.dropTable.GenerateDistinctPickups(generatedDropsList, PaleStar_Choices.Value + (PaleStar_ChoicesStack.Value * (itemCount - 1)), chestBehavior.rng);
+                    int dropAmount = 0;
+
+                    List<PickupIndex> voidTier1Indices = Run.instance.availableVoidTier1DropList;
+                    Util.ShuffleList(voidTier1Indices);
+                    List<PickupIndex> voidTier2Indices = Run.instance.availableVoidTier2DropList;
+                    Util.ShuffleList(voidTier2Indices);
+                    List<PickupIndex> voidTier3Indices = Run.instance.availableVoidTier3DropList;
+                    Util.ShuffleList(voidTier3Indices);
 
                     foreach (UniquePickup uniquePickup in generatedDropsList)
                     {
-                        switch(PickupCatalog.GetPickupDef(uniquePickup.pickupIndex).itemTier)
+                        PickupDef innerPickupDef = PickupCatalog.GetPickupDef(uniquePickup.pickupIndex);
+                        if (innerPickupDef != null && innerPickupDef.itemIndex != ItemIndex.None && ItemCatalog.GetItemDef(innerPickupDef.itemIndex))
                         {
-                            case ItemTier.Tier2:
-                                currentPickupDef = GetPickupOfTier(ItemTier.VoidTier2, voidedDrops);
-                                break;
-                            case ItemTier.Tier3:
-                                currentPickupDef = GetPickupOfTier(ItemTier.VoidTier3, voidedDrops);
-                                break;
-                            case ItemTier.Tier1:
-                            default: 
-                                currentPickupDef = GetPickupOfTier(ItemTier.VoidTier1, voidedDrops);
-                                break;
+                            ItemDef innerItemDef = ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(uniquePickup.pickupIndex).itemIndex);
+                            if (!innerItemDef.tags.Contains(ItemTag.WorldUnique))
+                            {
+                                switch(innerItemDef.tier)
+                                {
+                                    case ItemTier.Tier2:
+                                        if (voidTier2Indices.Count > 0)
+                                        {
+                                            currentPickupDef = voidTier2Indices.First().pickupDef;
+                                            voidTier2Indices.RemoveAt(0);
+                                        }
+                                        break;
+                                    case ItemTier.Tier3:
+                                        if (voidTier3Indices.Count > 0)
+                                        {
+                                            currentPickupDef = voidTier3Indices.First().pickupDef;
+                                            voidTier3Indices.RemoveAt(0);
+                                        }
+                                        break;
+                                    case ItemTier.Tier1:
+                                    default: 
+                                        if (voidTier1Indices.Count > 0)
+                                        {
+                                            currentPickupDef = voidTier1Indices.First().pickupDef;
+                                            voidTier1Indices.RemoveAt(0);
+                                        }
+                                        break;
+                                }
+
+                                if (currentPickupDef != null)
+                                {
+                                    voidedDrops.Add(currentPickupDef.pickupIndex);
+                                    voidedDropsUnique.Add(new UniquePickup(currentPickupDef.pickupIndex));
+                                    dropAmount++;
+                                }
+                            }
+                        }
+                    }
+
+                    if (dropAmount != 0)
+                    {
+                        PickupDropletController.CreatePickupDroplet
+                        (
+                            new GenericPickupController.CreatePickupInfo
+                            {
+                                pickerOptions = PickupPickerController.GenerateOptionsFromList(voidedDropsUnique), // violence
+                                prefabOverride = potentialPrefab,
+                                position = chestBehavior.dropTransform.position,
+                                rotation = Quaternion.identity,
+                                pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.VoidTier1)
+                            }, 
+                            chestBehavior.dropTransform.position, 
+                            Vector3.up * chestBehavior.dropUpVelocityStrength + chestBehavior.dropTransform.forward * chestBehavior.dropForwardVelocityStrength
+                        );
+
+                        EffectData effectData = new EffectData
+                        {
+                            origin = chestBehavior.transform.position
+                        };
+                        EffectManager.SpawnEffect(chestKillPrefab, effectData, false);
+
+                        int permCount = characterBody.inventory.GetItemCountPermanent(ItemDef);
+                        int tempCount = characterBody.inventory.GetItemCountEffective(ItemDef) - permCount;
+
+                        if (tempCount > 0)
+                        {
+                            characterBody.inventory.RemoveItemTemp(ItemIndex, tempCount);
+                            characterBody.inventory.GiveItemTemp(ConsumedItemDef.itemIndex, tempCount);
+                        }
+                        if (permCount > 0)
+                        {
+                            characterBody.inventory.RemoveItemPermanent(ItemIndex, permCount);
+                            characterBody.inventory.GiveItemPermanent(ConsumedItemDef.itemIndex, permCount);
+
+                            CharacterMasterNotificationQueue.SendTransformNotification(characterBody.master, ItemIndex, ConsumedItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
                         }
 
-                        if (currentPickupDef != null)
-                        {
-                            voidedDrops.Add(currentPickupDef.pickupIndex);
-                            voidedDropsUnique.Add(new UniquePickup(currentPickupDef.pickupIndex));
-                        }
+                        UnityEngine.Object.Destroy(interactableObject);
                     }
-
-                    PickupDropletController.CreatePickupDroplet
-                    (
-                        new GenericPickupController.CreatePickupInfo
-                        {
-                            pickerOptions = PickupPickerController.GenerateOptionsFromList(voidedDropsUnique), // violence
-                            prefabOverride = potentialPrefab,
-                            position = chestBehavior.dropTransform.position,
-                            rotation = Quaternion.identity,
-                            pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.VoidTier1)
-                        }, 
-                        chestBehavior.dropTransform.position, 
-                        Vector3.up * chestBehavior.dropUpVelocityStrength + chestBehavior.dropTransform.forward * chestBehavior.dropForwardVelocityStrength
-                    );
-
-                    EffectData effectData = new EffectData
-                    {
-                        origin = chestBehavior.transform.position
-                    };
-                    EffectManager.SpawnEffect(chestKillPrefab, effectData, false);
-
-                    int permCount = characterBody.inventory.GetItemCountPermanent(ItemDef);
-                    int tempCount = characterBody.inventory.GetItemCountEffective(ItemDef) - permCount;
-
-                    if (tempCount > 0)
-                    {
-                        characterBody.inventory.RemoveItemTemp(ItemIndex, tempCount);
-                        characterBody.inventory.GiveItemTemp(ConsumedItemDef.itemIndex, tempCount);
-                    }
-                    if (permCount > 0)
-                    {
-                        characterBody.inventory.RemoveItemPermanent(ItemIndex, permCount);
-                        characterBody.inventory.GiveItemPermanent(ConsumedItemDef.itemIndex, permCount);
-
-                        CharacterMasterNotificationQueue.SendTransformNotification(characterBody.master, ItemIndex, ConsumedItemDef.itemIndex, CharacterMasterNotificationQueue.TransformationType.Default);
-                    }
-
-                    UnityEngine.Object.Destroy(interactableObject);
                 }
                 else
                 {
                     orig(self, interactor, interactable, interactableObject);
                 }
             };
-        }
-
-        public PickupDef GetPickupOfTier(ItemTier itemTier, List<PickupIndex> existingList)
-        {
-            List<PickupDef> allPickups = PickupCatalog.allPickups.ToList();
-            allPickups = allPickups.OrderBy(i => Guid.NewGuid()).ToList();
-
-            foreach (PickupDef pickupDef in allPickups)
-            {
-                if (pickupDef.displayPrefab != null && pickupDef.itemIndex != ItemIndex.None && pickupDef.itemTier == itemTier && !existingList.Contains(pickupDef.pickupIndex))
-                {
-                    return pickupDef;
-                }
-            }
-
-            return null;
         }
     }
 }

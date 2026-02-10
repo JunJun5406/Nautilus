@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using R2API;
 using Nautilus.Items;
+using Nautilus.Interactables;
 using System.Collections.Generic;
 using System.Reflection;
 // using ShaderSwapper;
@@ -19,16 +20,19 @@ namespace Nautilus
     [BepInDependency("com.bepis.r2api.items", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.bepis.r2api.language", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.bepis.r2api.recalculatestats", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.bepis.r2api.prefab", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.bepis.r2api.director", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.rune580.riskofoptions", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class Main : BaseUnityPlugin
     {
         public const string NAUTILUS_GUID = "com.Hex3.Nautilus";
         public const string NAUTILUS_NAME = "Nautilus";
-        public const string NAUTILUS_VER = "1.1.1";
+        public const string NAUTILUS_VER = "1.2.0";
         public static Main Instance;
         public static ExpansionDef Expansion;
         public static AssetBundle Assets;
+        public static ItemRelationshipProvider ItemRelationshipProvider = new();
         public static List<ItemDef.Pair> ItemConversionList = new();
 
         public void Awake()
@@ -66,11 +70,15 @@ namespace Nautilus
             Log.Info($"Creating items...");
             ItemInit.Init();
 
-            ItemRelationshipProvider itemRelationshipProvider = ScriptableObject.CreateInstance<ItemRelationshipProvider>();
-            itemRelationshipProvider.name = "NT_ITEMRELATIONSHIPPROVIDER";
-            itemRelationshipProvider.relationshipType = Addressables.LoadAssetAsync<ItemRelationshipType>("RoR2/DLC1/Common/ContagiousItem.asset").WaitForCompletion();
-            itemRelationshipProvider.relationships = ItemConversionList.ToArray();
-            ContentAddition.AddItemRelationshipProvider(itemRelationshipProvider);
+            Log.Info($"Creating interactables...");
+            InteractableInit.Init();
+
+            Log.Info($"Creating void conversions...");
+            ItemRelationshipProvider = ScriptableObject.CreateInstance<ItemRelationshipProvider>();
+            ItemRelationshipProvider.name = "NT_ITEMRELATIONSHIPPROVIDER";
+            ItemRelationshipProvider.relationshipType = Addressables.LoadAssetAsync<ItemRelationshipType>("RoR2/DLC1/Common/ContagiousItem.asset").WaitForCompletion();
+            ItemRelationshipProvider.relationships = ItemConversionList.ToArray();
+            ContentAddition.AddItemRelationshipProvider(ItemRelationshipProvider);
 
             On.RoR2.RoR2Application.OnMainMenuControllerInitialized += (orig, self) =>
             {

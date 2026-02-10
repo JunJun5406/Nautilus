@@ -188,6 +188,7 @@ namespace Nautilus.Items
                         float totalDamageBoost = buffCount * (VoidWatch_Damagev2.Value + (VoidWatch_DamageStackv2.Value * (itemCount - 1)));
                         damageInfo.damage += damageInfo.damage * totalDamageBoost;
                         attackerBody.SetBuffCount(VoidWatchBuff.buffIndex, 0);
+                        attackerBody.RecalculateStats();
                     }
                 }
 

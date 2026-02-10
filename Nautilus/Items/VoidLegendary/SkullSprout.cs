@@ -166,37 +166,60 @@ namespace Nautilus.Items
             // Fracture randomness
             On.RoR2.DotController.InflictDot_refInflictDotInfo += (orig, ref self) =>
             {
-                if (self.dotIndex == DotController.DotIndex.Fracture && self.hitHurtBox && self.attackerObject && self.attackerObject.TryGetComponent(out CharacterBody attackerBody) && attackerBody.inventory && self.victimObject.TryGetComponent(out CharacterBody victimBody) && victimBody.healthComponent)
+                CharacterBody attackerBody = self.attackerObject.GetComponent<CharacterBody>();
+                CharacterBody victimBody = self.victimObject.GetComponent<CharacterBody>();
+                CollapseDoNotTransferBehavior collapseDoNotTransferBehavior = victimBody.gameObject.GetComponent<CollapseDoNotTransferBehavior>();
+                bool transfer = self.dotIndex == DotController.DotIndex.Fracture && GetItemCountEffective(attackerBody) > 0 && attackerBody.teamComponent && victimBody.teamComponent && attackerBody.teamComponent.teamIndex != victimBody.teamComponent.teamIndex;
+                
+                if (transfer && !collapseDoNotTransferBehavior)
                 {
-                    int itemCount = GetItemCountEffective(attackerBody);
+                    CharacterBody foundBody = null;
 
-                    if (itemCount > 0 && attackerBody.teamComponent && victimBody.teamComponent)
+                    List<Collider> colliders = Physics.OverlapSphere(self.hitHurtBox.transform.position, SkullSprout_CollapseRadius.Value).ToList();
+                    Util.ShuffleList(colliders);
+                    
+                    foreach(Collider collider in colliders)
                     {
-                        CharacterBody foundBody = victimBody;
-
-                        List<Collider> colliders = Physics.OverlapSphere(self.hitHurtBox.transform.position, SkullSprout_CollapseRadius.Value).ToList();
-                        colliders = colliders.OrderBy(i => Guid.NewGuid()).ToList();
-                        
-                        foreach(Collider collider in colliders)
+                        GameObject gameObject = collider.gameObject;
+                        if (gameObject.GetComponentInChildren<CharacterBody>())
                         {
-                            GameObject gameObject = collider.gameObject;
-                            if (gameObject.GetComponentInChildren<CharacterBody>())
+                            CharacterBody colliderBody = gameObject.GetComponentInChildren<CharacterBody>();
+                            if (colliderBody == victimBody)
                             {
-                                CharacterBody colliderBody = gameObject.GetComponentInChildren<CharacterBody>();
-                                if (colliderBody.healthComponent && colliderBody.healthComponent.health > 0f && colliderBody.teamComponent && colliderBody.teamComponent.teamIndex != attackerBody.teamComponent.teamIndex)
-                                {
-                                    foundBody = colliderBody;
-                                }
+                                break;
+                            }
+
+                            if (colliderBody.healthComponent && colliderBody.healthComponent.health > 0f && colliderBody.teamComponent && colliderBody.teamComponent.teamIndex != attackerBody.teamComponent.teamIndex && colliderBody != victimBody && colliderBody != attackerBody)
+                            {
+                                foundBody = colliderBody;
                             }
                         }
-
-                        if (foundBody != victimBody)
-                        {
-                            self.victimObject = foundBody.gameObject;
-                            self.hitHurtBox = foundBody.mainHurtBox;
-                            CollapseInfectOrb.CreateInfectOrb(victimBody.corePosition, foundBody.mainHurtBox);
-                        }
                     }
+
+                    if (foundBody)
+                    {
+                        InflictDotInfo newDot = new InflictDotInfo();
+                        newDot.attackerObject = self.attackerObject;
+                        newDot.damageMultiplier = self.damageMultiplier;
+                        newDot.dotIndex = self.dotIndex;
+                        newDot.duration = self.duration;
+                        newDot.hitHurtBox = foundBody.mainHurtBox;
+                        newDot.maxStacksFromAttacker = self.maxStacksFromAttacker;
+                        newDot.totalDamage = self.totalDamage;
+                        newDot.victimObject = foundBody.gameObject;
+
+                        foundBody.gameObject.AddComponent<CollapseDoNotTransferBehavior>();
+                        CollapseInfectOrb.CreateInfectOrb(victimBody.corePosition, foundBody.mainHurtBox);
+
+                        DotController.InflictDot(ref newDot);
+
+                        return;
+                    }
+                }
+
+                if (collapseDoNotTransferBehavior)
+                {
+                    UnityEngine.Object.Destroy(self.victimObject.GetComponent<CollapseDoNotTransferBehavior>());
                 }
 
                 orig(ref self);

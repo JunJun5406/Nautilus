@@ -151,7 +151,7 @@ namespace Nautilus.Items
             {
                 orig(self, damageInfo, victimObject);
 
-                if (!damageInfo.procChainMask.HasProc(ProcType.FractureOnHit) && !damageInfo.rejected && damageInfo.attacker && damageInfo.attacker.TryGetComponent(out CharacterBody attackerBody) && attackerBody.master && victimObject.TryGetComponent(out CharacterBody victimBody) && victimBody.healthComponent)
+                if (!damageInfo.procChainMask.HasProc(ProcType.FractureOnHit) && !damageInfo.rejected && damageInfo.damage > 0f && damageInfo.attacker && damageInfo.attacker.TryGetComponent(out CharacterBody attackerBody) && attackerBody.master && victimObject.TryGetComponent(out CharacterBody victimBody) && victimBody.healthComponent)
                 {
                     int itemCount = GetItemCountEffective(attackerBody);
                     
@@ -184,6 +184,8 @@ namespace Nautilus.Items
             // Infect in radius
             On.RoR2.HealthComponent.TakeDamageProcess += (orig, self, damageInfo) =>
             {
+                orig(self, damageInfo);
+
                 if (damageInfo.attacker && damageInfo.dotIndex == DotController.DotIndex.Fracture && self.body)
                 {   
                     CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
@@ -214,15 +216,15 @@ namespace Nautilus.Items
 
                             if (foundBody != null)
                             {
+                                foundBody.gameObject.AddComponent<CollapseDoNotTransferBehavior>();
+                                CollapseInfectOrb.CreateInfectOrb(self.body.corePosition, foundBody.mainHurtBox);
+
                                 DotController.DotDef dotDef = DotController.GetDotDef(DotController.DotIndex.Fracture);
                                 DotController.InflictDot(foundBody.gameObject, damageInfo.attacker, foundBody.mainHurtBox, DotController.DotIndex.Fracture, dotDef.interval);
-                                CollapseInfectOrb.CreateInfectOrb(self.body.corePosition, foundBody.mainHurtBox);
                             }
                         }
                     }
                 }
-
-                orig(self, damageInfo);
             };
         }
 
@@ -240,5 +242,10 @@ namespace Nautilus.Items
 
             return ret;
         }
+    }
+
+    public class CollapseDoNotTransferBehavior : MonoBehaviour
+    {
+
     }
 }

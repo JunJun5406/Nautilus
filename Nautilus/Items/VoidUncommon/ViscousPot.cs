@@ -36,6 +36,19 @@ namespace Nautilus.Items
         public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/Base/Clay/matClayBubble.mat").WaitForCompletion();
         public Material material2 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/voidstage/matVoidAsteroid.mat").WaitForCompletion();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/viscousPot.png");
+        private GameObject _gooExplodePrefab;
+        public GameObject gooExplodePrefab
+        {
+            get
+            {
+                if (_gooExplodePrefab == null)
+                {
+                    _gooExplodePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/goolake/ClayGooOrbImpact.prefab").WaitForCompletion();
+                }
+                return _gooExplodePrefab;
+            }
+            set;
+        }
 
         public ViscousPot(string _name, ItemTag[] _tags, ItemTier _tier, bool _canRemove = true, bool _isConsumed = false, bool _hidden = false) : 
         base(_name, _tags, _tier, _canRemove, _isConsumed, _hidden){}
@@ -172,6 +185,8 @@ namespace Nautilus.Items
             // Orbs on skill
             On.RoR2.CharacterBody.OnSkillActivated += (orig, self, genericSkill) =>
             {
+                orig(self, genericSkill);
+                
                 if (GetItemCountEffective(self) <= 0 || !self.healthComponent)
                 {
                     return;
@@ -190,8 +205,6 @@ namespace Nautilus.Items
                 {
                     FireOrbs(self, itemCount);
                 }
-
-                orig(self, genericSkill);
             };
         }
 
@@ -201,6 +214,7 @@ namespace Nautilus.Items
             colliders = colliders.OrderBy(i => Guid.NewGuid()).ToList();
             
             int orbCount = ViscousPot_OrbAmountv2.Value + (ViscousPot_OrbAmountStackv2.Value * (itemCount - 1));
+            bool exploded = false;
 
             foreach(Collider collider in colliders)
             {
@@ -215,6 +229,17 @@ namespace Nautilus.Items
                     CharacterBody colliderBody = gameObject.GetComponentInChildren<CharacterBody>();
                     if (colliderBody.healthComponent && colliderBody.healthComponent.health > 0f && colliderBody.teamComponent && colliderBody.teamComponent.teamIndex != body.teamComponent.teamIndex)
                     {
+                        if (!exploded)
+                        {
+                            EffectData effectData = new EffectData()
+                            {
+                                origin = body.corePosition
+                            };
+                            EffectManager.SpawnEffect(gooExplodePrefab, effectData, true);
+                            
+                            exploded = true;
+                        }
+
                         ViscousPotOrb viscousPotOrb = new ViscousPotOrb();
                         viscousPotOrb.attacker = body.gameObject;
                         viscousPotOrb.target = colliderBody.mainHurtBox;

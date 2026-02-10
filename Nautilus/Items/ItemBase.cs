@@ -3,6 +3,7 @@ using HarmonyLib;
 using IL.RoR2.UI;
 using R2API;
 using RoR2;
+using RoR2.ContentManagement;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -72,6 +73,7 @@ namespace Nautilus.Items
             ItemDef.loreToken = "NT_ITEM_" + Name.ToUpper() + "_LORE";
 
             ItemDef.tags = Tags;
+            ItemDef.tier = Tier;
             ItemDef.deprecatedTier = Tier;
             ItemDef.canRemove = CanRemove;
             ItemDef.isConsumed = IsConsumed;
