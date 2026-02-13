@@ -11,6 +11,10 @@ using Nautilus.Items;
 using Nautilus.Interactables;
 using System.Collections.Generic;
 using System.Reflection;
+using RiskOfOptions;
+using RiskOfOptions.Options;
+using BepInEx.Configuration;
+using System;
 // using ShaderSwapper;
 
 namespace Nautilus
@@ -28,12 +32,13 @@ namespace Nautilus
     {
         public const string NAUTILUS_GUID = "com.Hex3.Nautilus";
         public const string NAUTILUS_NAME = "Nautilus";
-        public const string NAUTILUS_VER = "1.2.0";
+        public const string NAUTILUS_VER = "1.2.1";
         public static Main Instance;
         public static ExpansionDef Expansion;
         public static AssetBundle Assets;
         public static ItemRelationshipProvider ItemRelationshipProvider = new();
         public static List<ItemDef.Pair> ItemConversionList = new();
+        public static ConfigEntry<bool> Config_Enabled;
 
         public void Awake()
         {
@@ -50,11 +55,20 @@ namespace Nautilus
             // base.StartCoroutine(Assets.UpgradeStubbedShadersAsync());
 
             Log.Info($"Creating config...");
+            Config_Enabled = Instance.Config.Bind(new ConfigDefinition("CONFIG - IMPORTANT", "Enable custom config"), false, new ConfigDescription("Set to 'true' to enable custom configuration for this mod. False by default to allow balance changes to take effect.", null, Array.Empty<object>()));
             if (Compat.RiskOfOptions)
             {
                 Log.Info($"Detected RiskOfOptions");
                 ModSettingsManager.SetModDescription("Adds new void counterparts for vanilla items.");
                 ModSettingsManager.SetModIcon(Assets.LoadAsset<Sprite>("Assets/icons/expansion.png"));
+                ModSettingsManager.AddOption
+                (
+                    new CheckBoxOption
+                    (
+                        Config_Enabled,
+                        true
+                    )
+                );
             }
 
             Log.Info($"Creating expansion...");

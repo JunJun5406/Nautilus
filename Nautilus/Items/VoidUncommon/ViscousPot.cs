@@ -71,6 +71,7 @@ namespace Nautilus.Items
             1f,
             0.05f
         );
+        /*
         public static ConfigItem<float> ViscousPot_BarrierAddv2 = new ConfigItem<float>
         (
             "Void uncommon: Viscous Pot",
@@ -80,6 +81,17 @@ namespace Nautilus.Items
             0f,
             1f,
             0.05f
+        );
+        */
+        public static ConfigItem<float> ViscousPot_BarrierAddFlatv2 = new ConfigItem<float>
+        (
+            "Void uncommon: Viscous Pot",
+            "Barrier on hit",
+            "Flat amount of barrier added when a viscous orb hits an enemy.",
+            15f,
+            0f,
+            50f,
+            1f
         );
         public static ConfigItem<int> ViscousPot_OrbAmountv2 = new ConfigItem<int>
         (
@@ -164,7 +176,7 @@ namespace Nautilus.Items
                     ViscousPot_OrbRadiusv2.Value,
                     ViscousPot_OrbRadiusStackv2.Value,
                     ViscousPot_OrbDamagev2.Value * 100f,
-                    ViscousPot_BarrierAddv2.Value * 100f
+                    ViscousPot_BarrierAddFlatv2.Value
                 )
             );
         }
@@ -211,7 +223,7 @@ namespace Nautilus.Items
         public void FireOrbs(CharacterBody body, int itemCount)
         {
             List<Collider> colliders = Physics.OverlapSphere(body.corePosition, ViscousPot_OrbRadiusv2.Value + (ViscousPot_OrbRadiusStackv2.Value * (itemCount - 1))).ToList();
-            colliders = colliders.OrderBy(i => Guid.NewGuid()).ToList();
+            Util.ShuffleList(colliders);
             
             int orbCount = ViscousPot_OrbAmountv2.Value + (ViscousPot_OrbAmountStackv2.Value * (itemCount - 1));
             bool exploded = false;
@@ -274,7 +286,7 @@ namespace Nautilus.Items
                     damageInfo.force = Vector3.zero;
                     damageInfo.crit = false;
                     damageInfo.procChainMask = procChainMask;
-                    damageInfo.procCoefficient = 0f;
+                    damageInfo.procCoefficient = 0.2f;
                     damageInfo.position = target.transform.position;
                     damageInfo.damageColorIndex = DamageColorIndex.Void;
                     damageInfo.damageType = damageType;
@@ -283,7 +295,7 @@ namespace Nautilus.Items
                     GlobalEventManager.instance.OnHitEnemy(damageInfo, target.healthComponent.gameObject);
                     GlobalEventManager.instance.OnHitAll(damageInfo, target.healthComponent.gameObject);
 
-                    attackerBody.healthComponent.AddBarrier(attackerBody.maxBarrier * ViscousPot_BarrierAddv2.Value);
+                    attackerBody.healthComponent.AddBarrier(ViscousPot_BarrierAddFlatv2.Value);
                 }
             }
         }

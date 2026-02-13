@@ -15,7 +15,14 @@ namespace Nautilus.Configuration
         {
             get
             {
-                return configEntry.Value;
+                if (Main.Config_Enabled.Value == true)
+                {
+                    return configEntry.Value;
+                }
+                else
+                {
+                    return defaultValue;
+                }
             }
         }
         public Type Type
