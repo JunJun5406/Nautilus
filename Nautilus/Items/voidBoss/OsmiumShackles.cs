@@ -39,7 +39,7 @@ namespace Nautilus.Items
             {
                 if (_radiusPrefab == null)
                 {
-                    _radiusPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC2/Items/AttackSpeedPerNearbyAllyOrEnemy/BolsteringLanternBonusIndicator.prefab").WaitForCompletion();
+                    _radiusPrefab = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<GameObject>("RoR2/DLC2/Items/AttackSpeedPerNearbyAllyOrEnemy/BolsteringLanternBonusIndicator.prefab").WaitForCompletion());
                     UnityEngine.Object.Destroy(_radiusPrefab.GetComponent<SphereCollider>());
                     UnityEngine.Object.Destroy(_radiusPrefab.GetComponent<AttackSpeedPerNearbyCollider>());
 

@@ -1,17 +1,18 @@
 # Nautilus
 <p align="center"><img src="https://github.com/hex3gc/Nautilus/blob/main/Images/expansion.png?raw=true" width=256></p>
-<p align="center">Adds a comprehensive void boss item tier, and 16 new void counterparts to vanilla/DLC items.</p>
+<p align="center">Adds a comprehensive void boss item tier, and 17 new void counterparts to vanilla and DLC items.</p>
 
 <hr>
 
-### Shrine of the Deep
-**Void boss** items can be obtained by activating a new shrine which spawns bosses and elites as Voidtouched at a higher difficulty, potentially rewarding you by converting any boss item drops into their void equivalents. They can also be obtained by using a Trophy Hunter's Tricorn on a Voidtouched boss, or through other methods.
+### Void Boss tier
+These powerful versions of boss items can be obtained in various ways, but a boss must first be Voidtouched for its item to become corrupted. To help you find more of them, this mod adds one new interactable:
 
+<p align="center" style="font-size: 1.1em;font-weight: 600">Shrine Of The Deep</p>
+<p align="center">Starts spawning at Stage 2. Activating calls out to the void, spawning Voidtouched bosses and elites at the teleporter. In exchange, you receive 1 bonus item drop, and all boss item rewards are converted to their void equivalents.</p>
 <p align="center"><img src="https://github.com/hex3gc/Nautilus/blob/main/Images/shrineOfTheDeep.png?raw=true" width=256></p>
 
-Not all Void Boss items are implemented yet, so enemies without one will drop their original boss item.
-
 ### Items
+The void item pool has been significantly expanded, with new options in all tiers:
 | Icon  | Description |
 | ------------- | ------------- |
 | | <p align="center">**VOID COMMON**</p> |
@@ -33,7 +34,8 @@ Not all Void Boss items are implemented yet, so enemies without one will drop th
 | <img src="https://github.com/hex3gc/Nautilus/blob/main/Images/mobiusNode.png?raw=true" width=128> | **Möbius Node**<br>```Regenerate shields instantly below half health.```<hr><p align="right">Gain a shield equal to **20%** of your maximum health. Falling under **50%** health **regenerates all of your shields instantly** and stuns nearby enemies. Occurs up to 2 times *(+1 per stack)* every 60 seconds. ***Corrupts all Genesis Loops.***</p> |
 | <img src="https://github.com/hex3gc/Nautilus/blob/main/Images/zoea.png?raw=true" width=128> | **Newly Hatched Zoea** - Rework courtesy of [kking117's ZoeaRework](https://thunderstore.io/package/kking117/ZoeaRework/)<br>```Recruit allies from the void.```<hr><p align="right">Every **30** seconds, gain a random **Void** ally with **100%** *(+50% per stack)* damage and **100%** *(+20% per stack)* **health.** Can have up to **3** allies at a time. ***Corrupts all Queen's Glands.***</p> |
 | <img src="https://github.com/hex3gc/Nautilus/blob/main/Images/osmiumShackles.png?raw=true" width=128> | **Osmium Shackles**<br>```Slow and encumber nearby enemies while making them susceptible to critical strikes.```<hr><p align="right">**Weighs down** enemies within **20m** *(+8m per stack)*, slowing their movement speed, attack speed and cooldowns by **30%**, and increasing **critical strike chance from ALL sources** against them by **25%**. ***Corrupts all Titanic Knurls.***</p> |
-| <img src="https://github.com/hex3gc/Nautilus/blob/main/Images/rebirth.png?raw=true" width=128> | **Rebirth**<br>```The Void corrupts your inventory and grants health regeneration.```<hr><p align="right">Corrupts **2** *(+2 per stack)* items per stage into their **void equivalents**. Each void item in your inventory grants **+1 hp/s** of passive health regeneration. ***Corrupts all Planulae.***</p> |
+| <img src="https://github.com/hex3gc/Nautilus/blob/main/Images/rebelSoul.png?raw=true" width=128> | **Rebel Soul**<br>```Using your equipment grants a cloaked speed boost in which nearby enemies' life is stolen.```<hr><p align="right">Activating your equipment grants **invisibility**, forcing you out of combat and increasing your movement speed by **40%** for **3** *(+3 per stack)* seconds. While invisible, **steal 3%** *(+3% per stack)* **hp per second** from non-boss enemies within **20m**. **Entering combat interrupts invisibility.** ***Corrupts all Little Disciples.***</p> |
+| <img src="https://github.com/hex3gc/Nautilus/blob/main/Images/rebirth.png?raw=true" width=128> | **Rebirth**<br>```The Void corrupts your inventory on pickup, increasing its influence over time and granting health regeneration.```<hr><p align="right">Corrupts **3** items into their **void equivalents** on pickup, then corrupts **2** items per stage. Each void item in your inventory grants **+1 hp/s** *(+0.5 hp/s per stack)* of passive health regeneration. ***Corrupts all Planulae.***</p> |
 | <img src="https://github.com/hex3gc/Nautilus/blob/main/Images/tenebralGland.png?raw=true" width=128> | **Tenebral Gland**<br>```Critical strikes cause hemmorhaging, and killing hemmorhaged enemies empowers critical strikes.```<hr><p align="right">Gain a **5%** *(+2.5% per stack)* chance to inflict **hemmorhaging** on critical hit. Killing an enemy while they're hemmorhaging **increases your critical strike chance and damage by 10%** for 10 seconds, up to 10 times per stack. ***Corrupts all Shatterspleens.***</p> |
 
 ### Recommended mods
@@ -42,6 +44,7 @@ Not all Void Boss items are implemented yet, so enemies without one will drop th
 - [VoidUnstableTransmitter](https://thunderstore.io/package/HDeDeDe/VoidUnstableTransmitter/) to make Unstable Transmitter less redundant as a void conversion of Old War Stealthkit.
 - [OldFathomlessVoidling](https://thunderstore.io/package/viliger/OldFathomlessVoidling/) for a better Voidling fight and void locus experience. Also adds a Locus portal to each fifth stage.
 - [CollapseDisplay](https://thunderstore.io/package/Goorakh/CollapseDisplay/) so collapse damage is easier to predict.
+- [BenthicRebloomed](https://thunderstore.io/package/braquen/Benthic_Rebloomed/) for a less lunar-like experience while using Benthic Bloom, to put it on par with other Void Legendary items in terms of balance.
 
 ### Feedback
 If you have questions about the mod, bugs to report or balance/technical suggestions, find me in the [RoR2 Modding Discord](https://discord.com/invite/5MbXZvd).

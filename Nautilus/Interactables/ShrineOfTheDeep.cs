@@ -318,6 +318,8 @@ namespace Nautilus.Interactables
                 {
                     self.bossDrops = ConvertBossDrops(self.bossDrops);
                     self.bossDropTables = ConvertBossDropTables(self.bossDropTables, self.rng);
+                    self.bonusRewardCount += 1;
+                    self.bossDropChance = 0.2f;
                 }
 
                 orig(self);
@@ -371,6 +373,10 @@ namespace Nautilus.Interactables
                 {
                     ret.Add(ItemInit.MobiusNode.explicitPickupDropTable);
                 }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SprintWisp.itemIndex))
+                {
+                    ret.Add(ItemInit.RebelSoul.explicitPickupDropTable);
+                }
                 else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BeetleGland.itemIndex) && ShrineOfTheDeep_ZoeaRework.Value == true)
                 {
                     ret.Add(explicitPickupDropTable);
@@ -410,6 +416,10 @@ namespace Nautilus.Interactables
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.MobiusNode.ItemIndex)));
                 }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SprintWisp.itemIndex))
+                {
+                    ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.RebelSoul.ItemIndex)));
+                }
                 else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BeetleGland.itemIndex) && ShrineOfTheDeep_ZoeaRework.Value)
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(DLC1Content.Items.VoidMegaCrabItem.itemIndex)));
@@ -443,7 +453,7 @@ namespace Nautilus.Interactables
             if (TeleporterInteraction.instance)
             {
                 TeleporterInteraction.instance.gameObject.AddComponent<ShrineOfTheDeepActivationBehavior>();
-                TeleporterInteraction.instance.AddShrineStack();
+                // TeleporterInteraction.instance.AddShrineStack();
 
                 if (interactor.TryGetComponent(out CharacterBody body))
                 {

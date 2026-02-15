@@ -194,12 +194,7 @@ namespace Nautilus.Items
 
                         droppedSoulCharacterBody.teamComponent.teamIndex = damageReport.victimBody.teamComponent.teamIndex;
 
-                        /*
-                        // If you are reading this
-                        // HOW do I add an elite buff to a new characterbody so it triggers elite on-kill effects
-                        // It refuses to work and I can't even add an inventory to it
-                        // It's not going to do elite stuff for now
-                        */
+                        // TODO: Add original character's HealthComponent and CharacterBody to the soul for more useful effects
                     }
                     else
                     {

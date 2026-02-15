@@ -1,7 +1,6 @@
 using BepInEx;
 using R2API.Utils;
 using RiskOfOptions;
-using Nautilus.Configuration;
 using RoR2;
 using RoR2.ExpansionManagement;
 using UnityEngine;
@@ -11,7 +10,6 @@ using Nautilus.Items;
 using Nautilus.Interactables;
 using System.Collections.Generic;
 using System.Reflection;
-using RiskOfOptions;
 using RiskOfOptions.Options;
 using BepInEx.Configuration;
 using System;
@@ -32,7 +30,7 @@ namespace Nautilus
     {
         public const string NAUTILUS_GUID = "com.Hex3.Nautilus";
         public const string NAUTILUS_NAME = "Nautilus";
-        public const string NAUTILUS_VER = "1.2.2";
+        public const string NAUTILUS_VER = "1.2.3";
         public static Main Instance;
         public static ExpansionDef Expansion;
         public static AssetBundle Assets;
