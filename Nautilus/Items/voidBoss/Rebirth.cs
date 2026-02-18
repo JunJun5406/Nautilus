@@ -14,7 +14,7 @@ namespace Nautilus.Items
         public static Rebirth Rebirth = new Rebirth
         (
             "Rebirth",
-            [ItemTag.Utility, ItemTag.Healing],
+            [ItemTag.Utility, ItemTag.Healing, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist, ItemTag.CannotSteal, ItemTag.ExtractorUnitBlacklist],
             ItemTier.VoidBoss
         );
     }
@@ -24,6 +24,8 @@ namespace Nautilus.Items
     ///     It was hard to think of a regen niche that hasn't been touched yet, so I decided to combine a regen boost with something that shakes up the run
     ///     Literally just a re-implementation of Corrupting Parasite, but I think this fits far better into the item pool
     ///     Big indirect buff to Crabsinthe as you're pretty likely to get one from a stage corruption
+    ///     // Ver.2
+    ///     Corrupting on pickup offsets the fact that Grandparents only spawn on Stage 5; if you're going straight to Mithrix, this gives you a guaranteed 5 void item corruptions
     /// </summary>
     public class Rebirth : ItemBase
     {
@@ -80,6 +82,7 @@ namespace Nautilus.Items
             5f,
             1f
         );
+        /*
         public static ConfigItem<int> Rebirth_ItemsCorruptStack = new ConfigItem<int>
         (
             "Void boss: Rebirth",
@@ -90,6 +93,7 @@ namespace Nautilus.Items
             5f,
             1f
         );
+        */
         public static ConfigItem<float> Rebirth_RegenPerItem = new ConfigItem<float>
         (
             "Void boss: Rebirth",
@@ -99,6 +103,26 @@ namespace Nautilus.Items
             0.5f,
             3f,
             0.5f
+        );
+        public static ConfigItem<float> Rebirth_RegenPerItemStack = new ConfigItem<float>
+        (
+            "Void boss: Rebirth",
+            "Regen per void item (per stack)",
+            "Regen in hp/s per void item in your inventory, per additional stack.",
+            0.5f,
+            0f,
+            3f,
+            0.5f
+        );
+        public static ConfigItem<int> Rebirth_ItemsCorruptPickup = new ConfigItem<int>
+        (
+            "Void boss: Rebirth",
+            "Items to corrupt on pickup",
+            "Items corrupted on pickup.",
+            3,
+            1f,
+            6f,
+            1f
         );
 
         public GameObject OverwritePrefabMaterials()
@@ -128,9 +152,10 @@ namespace Nautilus.Items
                 String.Format
                 (
                     Language.currentLanguage.GetLocalizedStringByToken(descriptionToken),
+                    Rebirth_ItemsCorruptPickup.Value,
                     Rebirth_ItemsCorrupt.Value,
-                    Rebirth_ItemsCorruptStack.Value,
-                    Rebirth_RegenPerItem.Value
+                    Rebirth_RegenPerItem.Value,
+                    Rebirth_RegenPerItemStack.Value
                 )
             );
         }
@@ -150,7 +175,25 @@ namespace Nautilus.Items
                     voidItemCount += orig.inventory.GetTotalItemCountOfTier(ItemTier.VoidTier3);
                     voidItemCount += orig.inventory.GetTotalItemCountOfTier(ItemTier.VoidBoss);
 
-                    self.baseRegenAdd += Rebirth_RegenPerItem.Value * voidItemCount;
+                    self.baseRegenAdd += (Rebirth_RegenPerItem.Value + (Rebirth_RegenPerItemStack.Value * (itemCount - 1))) * voidItemCount;
+                }
+            };
+
+            // On getting the item, corrupt 3 items
+            On.RoR2.Inventory.GiveItemPermanent_ItemIndex_int += (orig, self, itemIndex, count) =>
+            {
+                int rebirths = 0;
+                int rebirthsAfter = 0;
+
+                rebirths = self.GetItemCountPermanent(ItemIndex);
+
+                orig(self, itemIndex, count);
+
+                rebirthsAfter = self.GetItemCountPermanent(ItemIndex);
+
+                if (rebirthsAfter > rebirths && self.gameObject.GetComponentInChildren<CharacterMaster>())
+                {
+                    CorruptItems(self.gameObject.GetComponentInChildren<CharacterMaster>(), Rebirth_ItemsCorruptPickup.Value);
                 }
             };
 
@@ -164,43 +207,47 @@ namespace Nautilus.Items
                 }
                 if (self.inventory && self.inventory.GetItemCountEffective(ItemDef) > 0)
                 {
-                    Xoroshiro128Plus rng = new Xoroshiro128Plus(Run.instance.stageRng.nextUlong);
-                    int itemsLeft = Rebirth_ItemsCorrupt.Value + (Rebirth_ItemsCorruptStack.Value * (self.inventory.GetItemCountEffective(ItemDef)  - 1));;
-                    List<ItemIndex> itemList = new List<ItemIndex>(self.inventory.itemAcquisitionOrder);
-                    Util.ShuffleList(itemList, rng);
-                    rng.Next();
-
-                    foreach (ItemIndex item in itemList)
-                    {
-                        if (itemsLeft <= 0)
-                        {
-                            break;
-                        }
-                        foreach (ItemDef.Pair pair in ItemCatalog.GetItemPairsForRelationship(DLC1Content.ItemRelationshipTypes.ContagiousItem))
-                        {
-                            if (pair.itemDef1 == ItemCatalog.GetItemDef(item))
-                            {
-                                Inventory inventory = self.inventory;
-
-                                Inventory.ItemTransformation itemTransformation = new Inventory.ItemTransformation // thanks prodz
-                                {
-                                    originalItemIndex = ItemCatalog.GetItemDef(item).itemIndex,
-                                    newItemIndex = ItemCatalog.GetItemDef(pair.itemDef2.itemIndex).itemIndex
-                                };
-
-                                if (itemTransformation.TryTake(inventory, out Inventory.ItemTransformation.TakeResult takeResult))
-                                {
-                                    takeResult.GiveTakenItem(inventory, itemTransformation.newItemIndex);
-                                }
-
-                                CharacterMasterNotificationQueue.PushItemTransformNotification(self, item, pair.itemDef2.itemIndex, CharacterMasterNotificationQueue.TransformationType.ContagiousVoid);
-                                itemsLeft--;
-                                break;
-                            }
-                        }
-                    }
+                    int itemsLeft = Rebirth_ItemsCorrupt.Value;
+                    CorruptItems(self, itemsLeft);
                 }
             };
+        }
+        public void CorruptItems(CharacterMaster characterMaster, int amount)
+        {
+            Xoroshiro128Plus rng = new Xoroshiro128Plus(Run.instance.stageRng.nextUlong);
+            List<ItemIndex> itemList = new List<ItemIndex>(characterMaster.inventory.itemAcquisitionOrder);
+            Util.ShuffleList(itemList, rng);
+            rng.Next();
+
+            foreach (ItemIndex item in itemList)
+            {
+                if (amount <= 0)
+                {
+                    break;
+                }
+                foreach (ItemDef.Pair pair in ItemCatalog.GetItemPairsForRelationship(DLC1Content.ItemRelationshipTypes.ContagiousItem))
+                {
+                    if (pair.itemDef1 == ItemCatalog.GetItemDef(item))
+                    {
+                        Inventory inventory = characterMaster.inventory;
+
+                        Inventory.ItemTransformation itemTransformation = new Inventory.ItemTransformation // thanks prodz
+                        {
+                            originalItemIndex = ItemCatalog.GetItemDef(item).itemIndex,
+                            newItemIndex = ItemCatalog.GetItemDef(pair.itemDef2.itemIndex).itemIndex
+                        };
+
+                        if (itemTransformation.TryTake(inventory, out Inventory.ItemTransformation.TakeResult takeResult))
+                        {
+                            takeResult.GiveTakenItem(inventory, itemTransformation.newItemIndex);
+                        }
+
+                        // CharacterMasterNotificationQueue.PushItemTransformNotification(characterMaster, item, pair.itemDef2.itemIndex, CharacterMasterNotificationQueue.TransformationType.ContagiousVoid);
+                        amount--;
+                        break;
+                    }
+                }
+            }
         }
     }
 }

@@ -5,6 +5,8 @@ using R2API;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using HarmonyLib;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Nautilus.Items
 {
@@ -13,7 +15,7 @@ namespace Nautilus.Items
         public static DrenchedPerforator DrenchedPerforator = new DrenchedPerforator
         (
             "DrenchedPerforator",
-            [ItemTag.Damage],
+            [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.ExtractorUnitBlacklist, ItemTag.BrotherBlacklist],
             ItemTier.VoidBoss
         );
     }
@@ -30,6 +32,32 @@ namespace Nautilus.Items
         public ItemDef ConversionItemDefExtra => Addressables.LoadAssetAsync<ItemDef>("RoR2/Base/LightningStrikeOnHit/LightningStrikeOnHit.asset").WaitForCompletion();
         public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/TrimSheets/matTrimSheetMetalLightSnow.mat").WaitForCompletion();
         public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/Base/Croco/matCrocoSpine.mat").WaitForCompletion();
+        private GameObject _explodePrefab;
+        public GameObject explodePrefab
+        {
+            get
+            {
+                if (_explodePrefab == null)
+                {
+                    _explodePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
+                }
+                return _explodePrefab;
+            }
+            set;
+        }
+        private GameObject _individualExplodePrefab;
+        public GameObject individualExplodePrefab
+        {
+            get
+            {
+                if (_individualExplodePrefab == null)
+                {
+                    _individualExplodePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/BleedOnHitVoid/FractureImpactEffect.prefab").WaitForCompletion();
+                }
+                return _individualExplodePrefab;
+            }
+            set;
+        }
         private ExplicitPickupDropTable _explicitPickupDropTable;
         public ExplicitPickupDropTable explicitPickupDropTable
         {
@@ -70,7 +98,7 @@ namespace Nautilus.Items
             "Void boss: Drenched Perforator",
             "Damage threshold",
             "Repeating fractional damage threshold for additional stacks of collapse to be added.",
-            4f,
+            6f,
             1f,
             12f,
             0.5f
@@ -94,6 +122,36 @@ namespace Nautilus.Items
             1f,
             5f,
             1f
+        );
+        public static ConfigItem<float> DrenchedPerforator_ExplosionRadiusv2 = new ConfigItem<float>
+        (
+            "Void boss: Drenched Perforator",
+            "Explosion radius",
+            "Meters radius for the base collapse explosion.",
+            12f,
+            1f,
+            24f,
+            1f
+        );
+        public static ConfigItem<float> DrenchedPerforator_ExplosionRadiusIncreasev2 = new ConfigItem<float>
+        (
+            "Void boss: Drenched Perforator",
+            "Explosion radius increase",
+            "Meters radius the collapse explosion expands when additional collapse stacks are added.",
+            4f,
+            1f,
+            8f,
+            1f
+        );
+        public static ConfigItem<float> DrenchedPerforator_ExplosionDamage = new ConfigItem<float>
+        (
+            "Void boss: Drenched Perforator",
+            "Explosion damage",
+            "Fractional damage (1 = 100%) dealt by explosion.",
+            4f,
+            1f,
+            12f,
+            0.1f
         );
 
         public GameObject OverwritePrefabMaterials()
@@ -123,7 +181,10 @@ namespace Nautilus.Items
                     Language.currentLanguage.GetLocalizedStringByToken(descriptionToken),
                     DrenchedPerforator_Threshold.Value * 100f,
                     DrenchedPerforator_Stacks.Value,
-                    DrenchedPerforator_StacksStack.Value
+                    DrenchedPerforator_StacksStack.Value,
+                    DrenchedPerforator_ExplosionDamage.Value * 100f,
+                    DrenchedPerforator_ExplosionRadiusv2.Value,
+                    DrenchedPerforator_ExplosionRadiusIncreasev2.Value
                 )
             );
         }
@@ -166,11 +227,72 @@ namespace Nautilus.Items
                                 {
                                     DotController.InflictDot(victimObject, damageInfo.attacker, damageInfo.inflictedHurtbox, DotController.DotIndex.Fracture, dotDef.interval);
                                 }
+
+                                CreateExplosion(attackerBody, victimBody.corePosition, DrenchedPerforator_ExplosionRadiusv2.Value, DrenchedPerforator_ExplosionRadiusIncreasev2.Value * (stacksToInflict - 1), damageInfo);
                             }
                         }
                     }
                 }
             };
+        }
+
+        public void CreateExplosion(CharacterBody attackerBody, Vector3 position, float radius, float extraRadius, DamageInfo origDamageInfo)
+        {
+            List<Collider> colliders = Physics.OverlapSphere(position, radius + extraRadius).ToList();
+            Util.ShuffleList(colliders);
+
+            foreach(Collider collider in colliders)
+            {
+                GameObject gameObject = collider.gameObject;
+                if (gameObject.GetComponentInChildren<CharacterBody>())
+                {
+                    CharacterBody colliderBody = gameObject.GetComponentInChildren<CharacterBody>();
+                    if (colliderBody && colliderBody.teamComponent && colliderBody.teamComponent.teamIndex != attackerBody.teamComponent.teamIndex)
+                    {
+                        EffectData effectData = new EffectData()
+                        {
+                            origin = colliderBody.corePosition
+                        };
+                        EffectManager.SpawnEffect(individualExplodePrefab, effectData, true);
+                    }
+                }
+            }
+
+            BlastAttack blastAttack = new BlastAttack
+            {
+                position = position,
+                baseDamage = attackerBody.damage * DrenchedPerforator_ExplosionDamage.Value,
+                baseForce = 0f,
+                radius = radius + extraRadius,
+                attacker = attackerBody.gameObject,
+                inflictor = null,
+                teamIndex = attackerBody.teamComponent.teamIndex,
+                crit = origDamageInfo.crit,
+                procChainMask = origDamageInfo.procChainMask,
+                procCoefficient = 0f,
+                damageColorIndex = DamageColorIndex.Void,
+                falloffModel = BlastAttack.FalloffModel.None,
+                damageType = DamageType.AOE,
+                attackerFiltering = AttackerFiltering.NeverHitSelf
+            };
+            blastAttack.Fire();
+
+            float extraEffectSize = 0f;
+            if (extraRadius > 0f)
+            {
+                extraEffectSize = extraRadius / radius;
+            }
+            else
+            {
+                extraEffectSize = 0f;
+            }
+
+            EffectData effectData2 = new EffectData()
+            {
+                origin = position,
+                scale = 1f + extraEffectSize
+            };
+            EffectManager.SpawnEffect(explodePrefab, effectData2, true);
         }
     }
 }

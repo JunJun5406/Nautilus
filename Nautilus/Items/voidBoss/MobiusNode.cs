@@ -225,7 +225,14 @@ namespace Nautilus.Items
                     c.Emit(OpCodes.Ldarg, 0);
                     c.EmitDelegate<Func<HealthComponent, bool>>((hc) =>
                     {
-                        return hc.body.inventory.GetItemCountEffective(ItemInit.MobiusNode.ItemIndex) > 0;
+                        if (hc && hc.body && hc.body.inventory)
+                        {
+                            return hc.body.inventory.GetItemCountEffective(ItemInit.MobiusNode.ItemIndex) > 0;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     });
                     c.Emit(OpCodes.Or);
                 }

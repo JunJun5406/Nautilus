@@ -15,7 +15,7 @@ namespace Nautilus.Items
         public static MotherOfPearl MotherOfPearl = new MotherOfPearl
         (
             "MotherOfPearl",
-            [ItemTag.Damage, ItemTag.AIBlacklist],
+            [ItemTag.Damage, ItemTag.AIBlacklist, ItemTag.ExtractorUnitBlacklist, ItemTag.BrotherBlacklist],
             ItemTier.VoidTier3
         );
     }

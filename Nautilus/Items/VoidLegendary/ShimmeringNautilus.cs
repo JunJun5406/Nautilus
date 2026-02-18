@@ -14,7 +14,7 @@ namespace Nautilus.Items
         public static ShimmeringNautilus ShimmeringNautilus = new ShimmeringNautilus
         (
             "ShimmeringNautilus",
-            [ItemTag.Damage, ItemTag.Utility, ItemTag.AIBlacklist],
+            [ItemTag.Damage, ItemTag.Healing, ItemTag.AIBlacklist, ItemTag.ExtractorUnitBlacklist, ItemTag.BrotherBlacklist],
             ItemTier.VoidTier3
         );
     }
