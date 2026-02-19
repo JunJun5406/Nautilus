@@ -299,22 +299,11 @@ namespace Nautilus.Interactables
                     ItemCatalog.itemRelationships[DLC1Content.ItemRelationshipTypes.ContagiousItem] = newList.ToArray();
                 };
             }
-
-            // Spawn void elite bosses
-            On.RoR2.CombatDirector.Spawn += (orig, self, spawnCard, eliteDef, spawnTarget, spawnDistance, preventOverhead, valueMultiplier, placementMode, singleScaledBoss) =>
-            {
-                if ((spawnCard.hullSize == HullClassification.BeetleQueen || eliteDef != null) && TeleporterInteraction.instance != null && TeleporterInteraction.instance.isActivated && TeleporterInteraction.instance.GetComponent<ShrineOfTheDeepActivationBehavior>())
-                {
-                    eliteDef = voidEliteDef;
-                }
-
-                return orig(self, spawnCard, eliteDef, spawnTarget, spawnDistance, preventOverhead, valueMultiplier, placementMode, singleScaledBoss);
-            };
-
+            
             // Override boss rewards
             On.RoR2.BossGroup.DropRewards += (orig, self) =>
             {
-                if ((self.bossDrops != null || self.bossDropTables != null) && TeleporterInteraction.instance != null && TeleporterInteraction.instance.GetComponent<ShrineOfTheDeepActivationBehavior>())
+                if ((self.bossDrops != null || self.bossDropTables != null) && TeleporterInteraction.instance != null && self.forceTier3Reward != true && TeleporterInteraction.instance.GetComponent<ShrineOfTheDeepActivationBehavior>())
                 {
                     self.bossDrops = ConvertBossDrops(self.bossDrops);
                     self.bossDropTables = ConvertBossDropTables(self.bossDropTables, self.rng);
@@ -325,6 +314,7 @@ namespace Nautilus.Interactables
                 orig(self);
             };
 
+            // Override boss tricorn
             On.RoR2.EquipmentSlot.FireBossHunter += (orig, self) =>
             {
                 HurtBox hurtBox = self.currentTarget.hurtBox;
@@ -453,7 +443,17 @@ namespace Nautilus.Interactables
             if (TeleporterInteraction.instance)
             {
                 TeleporterInteraction.instance.gameObject.AddComponent<ShrineOfTheDeepActivationBehavior>();
-                // TeleporterInteraction.instance.AddShrineStack();
+
+                if (TeleporterInteraction.instance.bossDirector && TeleporterInteraction.instance.gameObject.GetComponent<ShrineOfTheDeepActivationBehavior>())
+                {
+                    TeleporterInteraction.instance.bossDirector.ActiveEliteDefOverride = InteractableInit.shrineOfTheDeep.voidEliteDef;
+                    TeleporterInteraction.instance.bossDirector.eliteBias = 0f;
+
+                    if (TeleporterInteraction.instance.bonusDirector)
+                    {
+                        TeleporterInteraction.instance.bonusDirector.ActiveEliteDefOverride = InteractableInit.shrineOfTheDeep.voidEliteDef;
+                    }
+                }
 
                 if (interactor.TryGetComponent(out CharacterBody body))
                 {
