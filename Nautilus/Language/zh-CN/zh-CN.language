@@ -35,7 +35,7 @@
 
         "NT_ITEM_HYDRATOOTH_NAME": "海德拉之牙",
         "NT_ITEM_HYDRATOOTH_PICKUP": "坍缩效果变为传染性，并附带虚弱效果。<style=cIsVoid>腐化所有剧毒荆棘。</style>",
-        "NT_ITEM_HYDRATOOTH_DESC": "攻击时有<style=cIsDamage>{0}%</style>几率触发<style=cIsDamage>坍缩</style>，坍缩造成伤害时，有<style=cIsDamage>{1}%</style><style=cStack>（每层+{2}%）</style>几率使<style=cIsDamage>5米范围内的另一名敌人陷入坍缩</style>。<style=cIsDamage>受坍缩影响的敌人护甲降低{3}点，移动速度降低{4}%。</style><style=cIsVoid>腐化所有剧毒荆棘。</style>",
+        "NT_ITEM_HYDRATOOTH_DESC": "获得<style=cIsDamage>{0}%</style><style=cStack>(每层叠加+{1}%)</style>几率在命中时施加<style=cIsDamage>坍缩</style>，该效果在造成伤害时，有<style=cIsDamage>{2}%</style>几率<style=cIsDamage>使{3}米内的另一名敌人触发坍缩</style>。<style=cIsDamage>受到坍缩影响的敌人护甲降低{4}<style=cStack>(每层叠加-{5})</style>，移动速度降低{6}%。</style></style><style=cIsVoid>腐化所有剧毒荆棘。</style>",
         "NT_ITEM_HYDRATOOTH_LORE": "<style=cStack><UES曙光号回收计划></style> \n<style=cStack><UES内部消息记录></style> \n<style=cStack><回收地点：无></style> \n<style=cStack><附注：2058/11/03></style> \n\n<style=cStack>jadesly123 = 杰德·S（UES平安远航号，科研团队学徒）</style> \n<style=cStack>Mira Li = 米拉·L（UES平安远航号，科研团队主管）</style> \n\n<style=cStack><转录开始></style> \n\njadesly123 <style=cStack>(2058/11/03 11:56)</style>：干饭不？ \n\njadesly123 <style=cStack>(2058/11/03 17:01)</style>：我找到罐装样本了，已经送回实验室，现在放在全闪烁密封容器里（按你建议用了磁能矿），为之前造成的麻烦说声抱歉！！ \n\njadesly123 <style=cStack>(2058/11/03 21:10)</style>：对了，我能申请几个加班工时不？我最近一直在研究这块怀表的走时规律，看似随机但指针的转动好像有模式。想看看不？ \n\nMira Li <style=cStack>(2058/11/03 21:32)</style>：[已读] \n\njadesly123 <style=cStack>(2058/11/03 21:58)</style>：抱歉是不是忙了？我晚点再发～对了海德拉是真的存在吗？还是哈维在开玩笑？他说你肯定知道 \n\nMira Li <style=cStack>(2058/11/04 01:20)</style>：[已读] \n\n<style=cStack><转录结束></style>",
 
         "NT_ITEM_SHIMMERINGNAUTILUS_NAME": "流光鹦鹉螺",
