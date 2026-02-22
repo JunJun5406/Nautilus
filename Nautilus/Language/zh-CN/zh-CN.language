@@ -3,6 +3,11 @@
         "NT_EXPANSION_NAME": "鹦鹉螺",
         "NT_EXPANSION_DESC": "将《鹦鹉螺》扩展包中的内容添加到游戏中。",
 
+        "NT_INTERACTABLE_SHRINEOFTHEDEEP_NAME": "深渊神龛",
+        "NT_INTERACTABLE_SHRINEOFTHEDEEP_CONTEXT": "<style=cIsVoid>挑战虚空</style>",
+        "NT_INTERACTABLE_SHRINEOFTHEDEEP_DESCRIPTION": "互动以<style=cIsVoid>挑战虚空</style>，提升传送器首领难度并生成<style=cIsVoid>虚空侵染</style>敌人。作为交换，所有掉落的<style=cShrine>首领物品</style>将转化为<style=cIsVoid>虚空首领物品</style>。",
+        "NT_INTERACTABLE_SHRINEOFTHEDEEP_MESSAGE": "<style=cIsVoid>你向虚空发出呼唤...</style>",
+
         "NT_ITEM_WELLIES_NAME": "浸水手套靴",
         "NT_ITEM_WELLIES_PICKUP": "命中时削弱空中敌人并将其拽至地面。<style=cIsVoid>腐化所有登山靴。</style>",
         "NT_ITEM_WELLIES_DESC": "命中空中敌人会将其向下拖拽<style=cStack>（每层提升拖拽力度）</style>，并使其陷入<style=cIsDamage>虚弱</style>状态<style=cIsDamage>{0}</style>秒<style=cStack>（每层+{1}秒）</style>，<style=cIsDamage>降低其30点护甲，同时减少40%移动速度与伤害。</style><style=cIsVoid>腐化所有登山靴。</style>",
