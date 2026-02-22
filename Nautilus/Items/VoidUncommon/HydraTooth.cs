@@ -56,21 +56,21 @@ namespace Nautilus.Items
             1f,
             0.05f
         );
+        public static ConfigItem<float> HydraTooth_CollapseChanceStack = new ConfigItem<float>
+        (
+            "Void uncommon: Tooth Of Hydra",
+            "Collapse chance (per stack)",
+            "Fractional chance to collapse an enemy on hit, per additional stack.",
+            0.05f,
+            0f,
+            1f,
+            0.05f
+        );
         public static ConfigItem<float> HydraTooth_CollapseTransferChance = new ConfigItem<float>
         (
             "Void uncommon: Tooth Of Hydra",
             "Collapse transfer chance (hyperbolic)",
             "Chance that a stack of collapse is transferred.",
-            0.5f,
-            0.05f,
-            1f,
-            0.05f
-        );
-        public static ConfigItem<float> HydraTooth_CollapseTransferChanceStack = new ConfigItem<float>
-        (
-            "Void uncommon: Tooth Of Hydra",
-            "Collapse transfer chance (hyperbolic, per stack)",
-            "Chance that a stack of collapse is transferred, per additional stack.",
             0.5f,
             0.05f,
             1f,
@@ -83,6 +83,16 @@ namespace Nautilus.Items
             "Collapse reduces enemy armor by this much.",
             20f,
             1f,
+            60f,
+            1f
+        );
+        public static ConfigItem<float> HydraTooth_ArmorReductionStack = new ConfigItem<float>
+        (
+            "Void uncommon: Tooth Of Hydra",
+            "Armor reduction (per stack)",
+            "Collapse reduces enemy armor by this much, per additional stack.",
+            10f,
+            0f,
             60f,
             1f
         );
@@ -134,11 +144,12 @@ namespace Nautilus.Items
                 (
                     Language.currentLanguage.GetLocalizedStringByToken(descriptionToken),
                     HydraTooth_CollapseChance.Value * 100f,
+                    HydraTooth_CollapseChanceStack.Value * 100f,
                     HydraTooth_CollapseTransferChance.Value * 100f,
-                    HydraTooth_CollapseTransferChanceStack.Value * 100f,
+                    HydraTooth_CollapseRadius.Value,
                     HydraTooth_ArmorReduction.Value,
-                    HydraTooth_SpeedReduction.Value * 100f,
-                    HydraTooth_CollapseRadius.Value
+                    HydraTooth_ArmorReductionStack.Value,
+                    HydraTooth_SpeedReduction.Value * 100f
                 )
             );
         }
@@ -157,7 +168,7 @@ namespace Nautilus.Items
                     
                     if (itemCount > 0 && attackerBody.teamComponent && victimBody.teamComponent)
                     {
-                        if (Util.CheckRoll(HydraTooth_CollapseChance.Value * 100f * damageInfo.procCoefficient, attackerBody.master.luck, attackerBody.master))
+                        if (Util.CheckRoll((HydraTooth_CollapseChance.Value + (HydraTooth_CollapseChanceStack.Value * (itemCount - 1))) * 100f * damageInfo.procCoefficient, attackerBody.master.luck, attackerBody.master))
                         {
                             DotController.DotDef dotDef = DotController.GetDotDef(DotController.DotIndex.Fracture);
                             DotController.InflictDot(victimObject, damageInfo.attacker, damageInfo.inflictedHurtbox, DotController.DotIndex.Fracture, dotDef.interval);
@@ -175,7 +186,7 @@ namespace Nautilus.Items
 
                     if (itemCount > 0)
                     {
-                        self.armorAdd -= HydraTooth_ArmorReduction.Value;
+                        self.armorAdd -= HydraTooth_ArmorReduction.Value + (HydraTooth_ArmorReductionStack.Value * (itemCount - 1));
                         self.moveSpeedMultAdd -= HydraTooth_SpeedReduction.Value;
                     }
                 }
@@ -194,7 +205,7 @@ namespace Nautilus.Items
                     {
                         int itemCount = GetItemCountEffective(attackerBody);
 
-                        if (itemCount > 0 && attackerBody.teamComponent && self.body.teamComponent && attackerBody.master && Util.CheckRoll(Util.ConvertAmplificationPercentageIntoReductionPercentage((HydraTooth_CollapseTransferChance.Value + (HydraTooth_CollapseTransferChanceStack.Value * (itemCount - 1))) * 100f), attackerBody.master.luck, attackerBody.master))
+                        if (itemCount > 0 && attackerBody.teamComponent && self.body.teamComponent && attackerBody.master && Util.CheckRoll(HydraTooth_CollapseTransferChance.Value * 100f, attackerBody.master.luck, attackerBody.master))
                         {
                             CharacterBody foundBody = null;
 
