@@ -32,7 +32,6 @@ namespace Nautilus.Items
         public override ItemDef ConversionItemDef => Addressables.LoadAssetAsync<ItemDef>("RoR2/DLC1/MinorConstructOnKill/MinorConstructOnKill.asset").WaitForCompletion();
         public override GameObject itemPrefab => OverwritePrefabMaterials();
         public override Sprite itemIcon => Main.Assets.LoadAsset<Sprite>("Assets/icons/splitNucleus.png");
-        public ItemDef ConversionItemDefExtra => Addressables.LoadAssetAsync<ItemDef>("RoR2/Base/LightningStrikeOnHit/LightningStrikeOnHit.asset").WaitForCompletion();
         public Material material0 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matNullifierGemPortal3.mat").WaitForCompletion();
         public Material material1 => Addressables.LoadAssetAsync<Material>("RoR2/Base/ShrineChance/matShrineChance.mat").WaitForCompletion();
         public Material material2 => Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matNullifierGemPortal3.mat").WaitForCompletion();

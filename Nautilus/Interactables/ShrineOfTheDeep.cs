@@ -375,6 +375,10 @@ namespace Nautilus.Interactables
                 {
                     ret.Add(ItemInit.SplitNucleus.explicitPickupDropTable);
                 }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SiphonOnLowHealth.itemIndex) && EffigyOfRot.EffigyOfRot_Enabled.Value)
+                {
+                    ret.Add(ItemInit.EffigyOfRot.explicitPickupDropTable);
+                }
                 else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BeetleGland.itemIndex) && ShrineOfTheDeep_ZoeaRework.Value == true)
                 {
                     ret.Add(explicitPickupDropTable);
@@ -425,6 +429,10 @@ namespace Nautilus.Interactables
                 else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(DLC1Content.Items.MinorConstructOnKill.itemIndex) && SplitNucleus.SplitNucleus_Enabled.Value)
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.SplitNucleus.ItemIndex)));
+                }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SiphonOnLowHealth.itemIndex) && EffigyOfRot.EffigyOfRot_Enabled.Value)
+                {
+                    ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.EffigyOfRot.ItemIndex)));
                 }
                 else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BeetleGland.itemIndex) && ShrineOfTheDeep_ZoeaRework.Value)
                 {
