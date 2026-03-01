@@ -159,10 +159,17 @@ namespace Nautilus.Items
             "Void boss: Effigy Of Rot",
             "Melee range",
             "Meters range within which damage is considered to be melee. Measured from the center of your character to the damage point of contact.",
-            10f,
+            13f,
             1f,
-            20f,
+            26f,
             1f
+        );
+        public static ConfigItem<bool> EffigyOfRot_CorruptsAllMiredUrns = new ConfigItem<bool>
+        (
+            "Void boss: Effigy Of Rot",
+            "Corrupts all Mired Urns",
+            "Corrupts all Mired Urns.",
+            false
         );
 
         public GameObject OverwritePrefabMaterials()
@@ -184,7 +191,17 @@ namespace Nautilus.Items
         // Tokens
         public override void FormatDescriptionTokens()
         {
+            string nameToken = ItemDef.nameToken;
             string descriptionToken = ItemDef.descriptionToken;
+
+            if (EffigyOfRot_CorruptsAllMiredUrns.Value == true)
+            {
+                LanguageAPI.AddOverlay
+                (
+                    nameToken,
+                    "<style=cIsVoid>Corrupts all Mired Urns.</style>"
+                );
+            }
 
             LanguageAPI.AddOverlay
             (

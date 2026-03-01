@@ -30,7 +30,7 @@ namespace Nautilus
     {
         public const string NAUTILUS_GUID = "com.Hex3.Nautilus";
         public const string NAUTILUS_NAME = "Nautilus";
-        public const string NAUTILUS_VER = "1.2.6";
+        public const string NAUTILUS_VER = "1.2.7";
         public static Main Instance;
         public static ExpansionDef Expansion;
         public static AssetBundle Assets;
@@ -54,20 +54,17 @@ namespace Nautilus
 
             Log.Info($"Creating config...");
             Config_Enabled = Instance.Config.Bind(new ConfigDefinition("CONFIG - IMPORTANT", "Enable custom config"), false, new ConfigDescription("Set to 'true' to enable custom configuration for this mod. False by default to allow balance changes to take effect.", null, Array.Empty<object>()));
-            if (Compat.RiskOfOptions)
-            {
-                Log.Info($"Detected RiskOfOptions");
-                ModSettingsManager.SetModDescription("Adds new void counterparts for vanilla items.");
-                ModSettingsManager.SetModIcon(Assets.LoadAsset<Sprite>("Assets/icons/expansion.png"));
-                ModSettingsManager.AddOption
+            
+            ModSettingsManager.SetModDescription("Adds new void counterparts for vanilla items.");
+            ModSettingsManager.SetModIcon(Assets.LoadAsset<Sprite>("Assets/icons/expansion.png"));
+            ModSettingsManager.AddOption
+            (
+                new CheckBoxOption
                 (
-                    new CheckBoxOption
-                    (
-                        Config_Enabled,
-                        true
-                    )
-                );
-            }
+                    Config_Enabled,
+                    true
+                )
+            );
 
             Log.Info($"Creating expansion...");
             Expansion = ScriptableObject.CreateInstance<ExpansionDef>();

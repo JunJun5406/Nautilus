@@ -143,6 +143,16 @@ namespace Nautilus.Items
             6f,
             0.1f
         );
+        public static ConfigItem<float> ViscousPot_OrbProcCoefficient = new ConfigItem<float>
+        (
+            "Void uncommon: Viscous Pot",
+            "Viscous orb proc coefficient",
+            "Proc coefficient of viscous orbs.",
+            0.2f,
+            0f,
+            1f,
+            0.05f
+        );
 
         public GameObject OverwritePrefabMaterials()
         {
@@ -286,7 +296,7 @@ namespace Nautilus.Items
                     damageInfo.force = Vector3.zero;
                     damageInfo.crit = false;
                     damageInfo.procChainMask = procChainMask;
-                    damageInfo.procCoefficient = 0.2f;
+                    damageInfo.procCoefficient = ViscousPot_OrbProcCoefficient.Value;
                     damageInfo.position = target.transform.position;
                     damageInfo.damageColorIndex = DamageColorIndex.Void;
                     damageInfo.damageType = damageType;
