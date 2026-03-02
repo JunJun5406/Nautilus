@@ -97,5 +97,15 @@
         "NT_ITEM_REBELSOUL_PICKUP": "使用装备时获得隐身与移速提升，吸取附近敌人生命。<style=cIsVoid>腐化所有小门徒。</style>",
         "NT_ITEM_REBELSOUL_DESC": "激活装备时获得<style=cisUtility>隐身</style>，脱离战斗并提升移动速度<style=cisUtility>40%</style>，持续<style=cisUtility>{0}</style> <style=cStack>(每层叠加+{1})</style>秒。隐身期间，每秒从<style=cisUtility>{4}米</style>内非首领敌人身上<style=cIsHealing>吸取{2}%</style> <style=cStack>(每层叠加+{3}%)</style> <style=cisHealing>生命值</style>。<style=cisUtility>进入战斗会打断隐身。</style> <style=cIsVoid>腐化所有</style><style=cShrine>小门徒。</style>",
         "NT_ITEM_REBELSOUL_LORE": "<style=cStack>无数据……</style>",
+
+        "NT_ITEM_SPLITNUCLEUS_NAME": "分裂核心",
+        "NT_ITEM_SPLITNUCLEUS_PICKUP": "完全格挡高伤害攻击。击杀精英怪物可恢复充能。<style=cIsVoid>腐化所有</style><style=cShrine>防御核心。</style>",
+        "NT_ITEM_SPLITNUCLEUS_DESC": "最多可完全格挡<style=cIsHealth>{0}次</style><style=cStack>(每层+{1}次)</style>对你造成最大生命值<style=cIsHealth>{2}%</style>及以上伤害的攻击。<style=cIsDamage>击杀一名精英怪物可获得{3}次格挡充能。</style><style=cIsVoid>腐化所有</style><style=cShrine>防御核心。</style>",
+        "NT_ITEM_SPLITNUCLEUS_LORE": "<style=cStack>< 联合远征军曙光号回收计划 ></style>\n<style=cStack>< 音频记录转录本 ></style>\n<style=cStack>< 回收地点：「阿尔法 2 号安全空投区外围」 ></style>\n<style=cStack>< 附评：「无」 ></style>\n\n<style=cStack> 杰德 = 科研小队学徒「杰德・S」</style>\n<style=cStack> 哈维 = 突击兵编制人员「哈维・D」</style>\n\n<style=cStack>< 转录开始 ></style>\n\n 杰德：你不是来真的吧？\n\n 哈维：千真万确。指个东西，我来对它用腐化那套。\n\n 杰德：然后它就会变成那玩意儿的诡异变态版？【笑】\n\n 哈维：只管指个东西就行！\n\n 哈维：别指那个。【笑】\n\n 杰德：行，那这个呢？\n\n【能量冲击声；疑似来自「空无者」样本】\n\n 杰德：那玩意儿到底是个什么鬼东西！\n\n 哈维：真成了。\n\n 杰德：看着像某种螃蟹。虚空蟹？就叫「虚蟹」？\n\n 哈维：我们就叫它「虚蟹」，没错。\n\n 杰德：也太酷了吧。\n\n 哈维：【笑】\n\n【打斗声。哈维附注：这玩意儿夹了她一口！】\n\n 杰德：【大叫】\n\n 哈维：靠！疼不疼？\n\n 杰德：没事的。这些螃蟹就是 ——\n\n 哈维：我有急救包。等我一下。\n\n 杰德：谢了。\n\n 哈维：或许我们不该这么用它。现在想想，这主意蠢透了。我差点把你 —— 差点把人弄伤。\n\n 杰德：【轻笑】\n\n 哈维：咋了？\n\n 杰德：都说了我没事。你这可是给我弄来了有史以来最好的研究素材。一点小划伤而已，不值一提。\n\n【长时间沉默】\n\n<style=cStack>< 转录结束 ></style>",
+
+        "NT_ITEM_EFFIGYOFROT_NAME": "腐坏圣像",
+        "NT_ITEM_EFFIGYOFROT_PICKUP": "近战命中时施加传染性剧毒，毒素会为你缓慢恢复生命值。<style=cIsVoid>腐化所有</style><style=cShrine>泥沼之瓮。</style>",
+        "NT_ITEM_EFFIGYOFROT_DESC": "近战范围内击中敌人，将对其施加<style=cIsHealing>剧毒</style>，持续{0}秒。你的所有剧毒或枯萎效果现在将为你<style=cIsHealing>每秒恢复{1}点生命值</style><style=cStack>(每层+{2}点/秒)</style>，且每秒有<style=cIsDamage>{3}%</style><style=cStack>(每层+{4}%)</style>的几率向<style=cIsDamage>{5}米范围内的一名敌人传播</style>。<style=cIsVoid>腐化所有</style><style=cShrine>泥沼之瓮。</style>",
+        "NT_ITEM_EFFIGYOFROT_LORE": "<style=cStack>无数据……</style>",
     }
 }
