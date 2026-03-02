@@ -343,29 +343,41 @@ namespace Nautilus.Interactables
             {
                 UniquePickup uniquePickup = pickupDropTable.GeneratePickup(rng);
 
-                if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.FireballsOnHit.itemIndex) || uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.LightningStrikeOnHit.itemIndex))
+                if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.FireballsOnHit.itemIndex) && DrenchedPerforator.DrenchedPerforator_Enabled.Value)
                 {
                     ret.Add(ItemInit.DrenchedPerforator.explicitPickupDropTable);
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.Knurl.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.LightningStrikeOnHit.itemIndex) && DrenchedPerforator.DrenchedPerforator_Enabled.Value)
+                {
+                    ret.Add(ItemInit.DrenchedPerforator.explicitPickupDropTable);
+                }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.Knurl.itemIndex) && OsmiumShackles.OsmiumShackles_Enabled.Value)
                 {
                     ret.Add(ItemInit.OsmiumShackles.explicitPickupDropTable);
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BleedOnHitAndExplode.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BleedOnHitAndExplode.itemIndex) && TenebralGland.TenebralGland_Enabled.Value)
                 {
                     ret.Add(ItemInit.TenebralGland.explicitPickupDropTable);
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.ParentEgg.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.ParentEgg.itemIndex) && Rebirth.Rebirth_Enabled.Value)
                 {
                     ret.Add(ItemInit.Rebirth.explicitPickupDropTable);
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.NovaOnLowHealth.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.NovaOnLowHealth.itemIndex) && MobiusNode.MobiusNode_Enabled.Value)
                 {
                     ret.Add(ItemInit.MobiusNode.explicitPickupDropTable);
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SprintWisp.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SprintWisp.itemIndex) && RebelSoul.RebelSoul_Enabled.Value)
                 {
                     ret.Add(ItemInit.RebelSoul.explicitPickupDropTable);
+                }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(DLC1Content.Items.MinorConstructOnKill.itemIndex) && SplitNucleus.SplitNucleus_Enabled.Value)
+                {
+                    ret.Add(ItemInit.SplitNucleus.explicitPickupDropTable);
+                }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SiphonOnLowHealth.itemIndex) && EffigyOfRot.EffigyOfRot_Enabled.Value)
+                {
+                    ret.Add(ItemInit.EffigyOfRot.explicitPickupDropTable);
                 }
                 else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BeetleGland.itemIndex) && ShrineOfTheDeep_ZoeaRework.Value == true)
                 {
@@ -386,29 +398,41 @@ namespace Nautilus.Interactables
 
             foreach (UniquePickup uniquePickup in bossDrops)
             {
-                if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.FireballsOnHit.itemIndex) || uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.LightningStrikeOnHit.itemIndex))
+                if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.FireballsOnHit.itemIndex) && DrenchedPerforator.DrenchedPerforator_Enabled.Value)
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.DrenchedPerforator.ItemIndex)));
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.Knurl.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.LightningStrikeOnHit.itemIndex) && DrenchedPerforator.DrenchedPerforator_Enabled.Value)
+                {
+                    ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.DrenchedPerforator.ItemIndex)));
+                }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.Knurl.itemIndex) && OsmiumShackles.OsmiumShackles_Enabled.Value)
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.OsmiumShackles.ItemIndex)));
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BleedOnHitAndExplode.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BleedOnHitAndExplode.itemIndex) && TenebralGland.TenebralGland_Enabled.Value)
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.TenebralGland.ItemIndex)));
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.ParentEgg.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.ParentEgg.itemIndex) && Rebirth.Rebirth_Enabled.Value)
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.Rebirth.ItemIndex)));
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.NovaOnLowHealth.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.NovaOnLowHealth.itemIndex) && MobiusNode.MobiusNode_Enabled.Value)
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.MobiusNode.ItemIndex)));
                 }
-                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SprintWisp.itemIndex))
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SprintWisp.itemIndex) && RebelSoul.RebelSoul_Enabled.Value)
                 {
                     ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.RebelSoul.ItemIndex)));
+                }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(DLC1Content.Items.MinorConstructOnKill.itemIndex) && SplitNucleus.SplitNucleus_Enabled.Value)
+                {
+                    ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.SplitNucleus.ItemIndex)));
+                }
+                else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.SiphonOnLowHealth.itemIndex) && EffigyOfRot.EffigyOfRot_Enabled.Value)
+                {
+                    ret.Add(new UniquePickup(PickupCatalog.FindPickupIndex(ItemInit.EffigyOfRot.ItemIndex)));
                 }
                 else if (uniquePickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.BeetleGland.itemIndex) && ShrineOfTheDeep_ZoeaRework.Value)
                 {

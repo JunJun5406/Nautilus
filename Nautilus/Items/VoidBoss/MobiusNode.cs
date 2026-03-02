@@ -307,9 +307,10 @@ namespace Nautilus.Items
             }
             set
             {
+                RecheckMaxStacks();
+                
                 _stacks = value;
                 characterBody.SetBuffCount(buffDef.buffIndex, _stacks);
-                RecheckMaxStacks();
             }
         }
         public int maxStacks = 0;
@@ -325,7 +326,7 @@ namespace Nautilus.Items
                 Destroy(this);
             }
 
-            maxStacks = MobiusNode.MobiusNode_Stacks.Value + MobiusNode.MobiusNode_StacksStack.Value * (characterBody.inventory.GetItemCountEffective(ItemInit.MobiusNode.ItemIndex) - 1);
+            RecheckMaxStacks();
             stacks = maxStacks;
         }
 

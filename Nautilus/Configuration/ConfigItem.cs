@@ -58,62 +58,60 @@ namespace Nautilus.Configuration
         {
             configEntry = Main.Instance.Config.Bind(new ConfigDefinition(header, name), defaultValue, new ConfigDescription(desc));
 
-            if (Compat.RiskOfOptions)
+            if (this.Type == typeof(bool))
             {
-                if (this.Type == typeof(bool))
-                {
-                    ModSettingsManager.AddOption
+                ModSettingsManager.AddOption
+                (
+                    new CheckBoxOption
                     (
-                        new CheckBoxOption
-                        (
-                            configEntry as ConfigEntry<bool>,
-                            true
-                        )
-                    );
-                }
-                else if (this.Type == typeof(string))
-                {
-                    ModSettingsManager.AddOption
-                    (
-                        new StringInputFieldOption
-                        (
-                            configEntry as ConfigEntry<string>,
-                            true
-                        )
-                    );
-                }
-                else if (this.Type == typeof(int))
-                {
-                    int defaultValueInt = Convert.ToInt32(defaultValue);
-                    float minValueInt = minValue == float.MinValue ? 0.0f : minValue;
-                    float maxValueInt = maxValue == float.MinValue ? defaultValueInt * 10f : maxValue;
-
-                    ModSettingsManager.AddOption
-                    (
-                        new IntSliderOption
-                        (
-                            configEntry as ConfigEntry<int>, 
-                            new IntSliderConfig(){min = (int)minValueInt, max = (int)maxValueInt, restartRequired = true}
-                        )
-                    );
-                }
-                else if (this.Type == typeof(float))
-                {
-                    float defaultValueFloat = Convert.ToSingle(defaultValue);
-                    float minValueFloat = minValue == float.MinValue ? 0.0f : minValue;
-                    float maxValueFloat = maxValue == float.MinValue ? defaultValueFloat * 10f : maxValue;
-                    float incrementFloat = increment == float.MinValue ? defaultValueFloat / 10f : increment;
-
-                    ModSettingsManager.AddOption
-                    (
-                        new StepSliderOption
-                        (
-                            configEntry as ConfigEntry<float>,
-                            new StepSliderConfig(){min = minValueFloat, max = maxValueFloat, increment = incrementFloat, restartRequired = true}
-                        )
-                    );
-                }
+                        configEntry as ConfigEntry<bool>,
+                        true
+                    )
+                );
             }
+            else if (this.Type == typeof(string))
+            {
+                ModSettingsManager.AddOption
+                (
+                    new StringInputFieldOption
+                    (
+                        configEntry as ConfigEntry<string>,
+                        true
+                    )
+                );
+            }
+            else if (this.Type == typeof(int))
+            {
+                int defaultValueInt = Convert.ToInt32(defaultValue);
+                float minValueInt = minValue == float.MinValue ? 0.0f : minValue;
+                float maxValueInt = maxValue == float.MinValue ? defaultValueInt * 10f : maxValue;
+
+                ModSettingsManager.AddOption
+                (
+                    new IntSliderOption
+                    (
+                        configEntry as ConfigEntry<int>, 
+                        new IntSliderConfig(){min = (int)minValueInt, max = (int)maxValueInt, restartRequired = true}
+                    )
+                );
+            }
+            else if (this.Type == typeof(float))
+            {
+                float defaultValueFloat = Convert.ToSingle(defaultValue);
+                float minValueFloat = minValue == float.MinValue ? 0.0f : minValue;
+                float maxValueFloat = maxValue == float.MinValue ? defaultValueFloat * 10f : maxValue;
+                float incrementFloat = increment == float.MinValue ? defaultValueFloat / 10f : increment;
+
+                ModSettingsManager.AddOption
+                (
+                    new StepSliderOption
+                    (
+                        configEntry as ConfigEntry<float>,
+                        new StepSliderConfig(){min = minValueFloat, max = maxValueFloat, increment = incrementFloat, restartRequired = true}
+                    )
+                );
+            }
+            
         }
     }
 }

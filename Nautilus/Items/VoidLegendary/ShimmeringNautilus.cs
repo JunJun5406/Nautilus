@@ -86,6 +86,16 @@ namespace Nautilus.Items
             2500f,
             100f
         );
+        public static ConfigItem<float> ShimmeringNautilus_RetaliateProcCoefficient = new ConfigItem<float>
+        (
+            "Void legendary: Shimmering Nautilus",
+            "Retaliation proc coefficient",
+            "Proc coefficient of the retaliation projectile.",
+            1f,
+            0f,
+            3f,
+            0.1f
+        );
 
         public GameObject OverwritePrefabMaterials()
         {
@@ -151,7 +161,7 @@ namespace Nautilus.Items
                             missileVoidOrb.damageValue = victimBody.damage * (ShimmeringNautilus_RetaliateDamage.Value / 100f) + ((ShimmeringNautilus_RetaliateDamageStack.Value / 100f) * (itemCount - 1));
                             missileVoidOrb.teamIndex = victimBody.teamComponent.teamIndex;
                             missileVoidOrb.attacker = victimBody.gameObject;
-                            missileVoidOrb.procCoefficient = 0f;
+                            missileVoidOrb.procCoefficient = ShimmeringNautilus_RetaliateProcCoefficient.Value;
                             missileVoidOrb.damageColorIndex = DamageColorIndex.Void;
                             missileVoidOrb.scale = 3f;
                             HurtBox mainHurtBox = attackerBody.mainHurtBox;

@@ -153,6 +153,16 @@ namespace Nautilus.Items
             12f,
             0.1f
         );
+        public static ConfigItem<float> DrenchedPerforator_ExplosionProcCoefficient = new ConfigItem<float>
+        (
+            "Void boss: Drenched Perforator",
+            "Explosion proc coefficient",
+            "Proc coefficient of the on-collapse explosion.",
+            0.2f,
+            0f,
+            1f,
+            0.05f
+        );
 
         public GameObject OverwritePrefabMaterials()
         {
@@ -269,7 +279,7 @@ namespace Nautilus.Items
                 teamIndex = attackerBody.teamComponent.teamIndex,
                 crit = origDamageInfo.crit,
                 procChainMask = origDamageInfo.procChainMask,
-                procCoefficient = 0f,
+                procCoefficient = DrenchedPerforator_ExplosionProcCoefficient.Value,
                 damageColorIndex = DamageColorIndex.Void,
                 falloffModel = BlastAttack.FalloffModel.None,
                 damageType = DamageType.AOE,
